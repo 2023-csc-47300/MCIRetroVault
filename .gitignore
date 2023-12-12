@@ -24,3 +24,9 @@ mci/yarn-error.log*
 
 # virtual environment
 .venv/
+
+# binary Python files
+__pycache__/
+
+# env files - placed within server directory for this project
+server/.env
