@@ -30,3 +30,6 @@ __pycache__/
 
 # env files - placed within server directory for this project
 server/.env
+
+# .DS_store files - pesky things from Mac... not needed in Git
+**/.DS_Store
