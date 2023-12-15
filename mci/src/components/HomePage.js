@@ -47,7 +47,6 @@ function HomePage() {
           </div>
         </div>
       </header>
-
       <main>
         <h1>MCIRetroVault Content </h1>
       </main>

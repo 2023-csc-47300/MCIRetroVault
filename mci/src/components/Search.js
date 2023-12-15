@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';  
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-import AuthService from '../services/AuthService'; // importing AuthService
 
+import AuthService from '../services/AuthService'; // importing AuthService
 
 import { useState, useEffect } from 'react';
 import $ from 'jquery';
@@ -113,6 +113,7 @@ function Search() {
 
     return (
         <>
+
          <header>
                 <div className="header-container">
                     <div className="header-left">
