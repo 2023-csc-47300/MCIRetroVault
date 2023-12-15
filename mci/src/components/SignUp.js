@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/AuthService'; // importing AuthService
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import { Link } from 'react-router-dom';  
 

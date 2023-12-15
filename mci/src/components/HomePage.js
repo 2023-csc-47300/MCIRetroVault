@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate} from 'react-router-dom';  
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-import AuthService from '../services/AuthService'; // Import your AuthService
+import AuthService from '../services/AuthService'; // importing AuthService
 
 function HomePage() {
   const navigate = useNavigate();
