@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import AuthService from '../services/AuthService';
+import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
+import { Link } from 'react-router-dom';  
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -26,6 +28,21 @@ function SignIn() {
   };
 
   return (
+    <>
+    <header>
+        <div className="header-container">
+          <div className="header-left">
+            <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
+            <h1>MCIRetroVault</h1>
+          </div>
+          <div className="header-right">
+            <Link to="/" className="header-button">Home</Link>
+            <Link to="/signup" className="header-button">Sign Up</Link>
+            <Link to="/search" className="header-button">Search</Link>
+          </div>
+        </div>
+    </header>
+
     <div className="signin-container">
       <form className="signin-form" onSubmit={handleSignIn}>
         <h2>Sign In to MCIRetroVault</h2>
@@ -59,6 +76,7 @@ function SignIn() {
         <button type="submit" className="signin-button">Sign In</button>
       </form>
     </div>
+    </>
   );
 }
 
