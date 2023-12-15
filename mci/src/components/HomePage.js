@@ -14,6 +14,7 @@ function HomePage() {
           <div className="header-right">
             <Link to="/signin" className="header-button">Sign In</Link>
             <Link to="/signup" className="header-button">Sign Up</Link>
+            <Link to="/search" className="header-button">Search</Link>
           </div>
         </div>
       </header>
