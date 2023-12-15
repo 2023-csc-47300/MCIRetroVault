@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import AuthService from '../services/AuthService';
+
+import AuthService from '../services/AuthService'; // importing AuthService
+
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import { Link } from 'react-router-dom';  
 
@@ -18,9 +20,8 @@ function SignIn() {
     try {
       // Assuming your AuthService.login method expects an object with email and password
       await AuthService.login(email, password);
-      // Redirect to dashboard or home page on successful login
-      // Replace the below URL with where you need to redirect after login
-      window.location.href = '/dashboard';
+      // redirect to the homepage of the website
+      window.location.href = '/';
     } catch (error) {
       // If there's an error, such as wrong credentials, display it
       setErrorMessage('Failed to sign in. Please check your credentials.');
