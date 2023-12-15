@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import AuthService from '../services/AuthService';
+import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
+import { Link } from 'react-router-dom';  
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -50,6 +52,20 @@ function SignUp() {
 };
 
   return (
+    <>
+    <header>
+        <div className="header-container">
+          <div className="header-left">
+            <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
+            <h1>MCIRetroVault</h1>
+          </div>
+          <div className="header-right">
+            <Link to="/" className="header-button">Home</Link>
+            <Link to="/signin" className="header-button">Sign In</Link>
+            <Link to="/search" className="header-button">Search</Link>
+          </div>
+        </div>
+      </header>
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
         <h2>Create Your Account</h2>
@@ -79,6 +95,7 @@ function SignUp() {
         <button type="submit" className="create-account-button">Create Account</button>
       </form>
     </div>
+    </>
   );
 }
 
