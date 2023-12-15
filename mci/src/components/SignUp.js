@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import AuthService from '../services/AuthService'; // importing AuthService
+import AuthService from '../services/AuthService';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-import { Link } from 'react-router-dom';  
+import { Link, useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -13,8 +13,9 @@ function SignUp() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -23,7 +24,6 @@ function SignUp() {
     }));
   };
 
-  //   password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -31,7 +31,6 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Optional: Add password confirmation check
     if (formData.password !== formData.confirmPassword) {
         alert("Passwords do not match");
         return;
@@ -44,12 +43,16 @@ function SignUp() {
             formData.email,
             formData.password
         );
-        console.log(response); // show success message or redirect
+        if (response.msg) {
+            setSuccessMessage(response.msg);
+            setTimeout(() => {
+                navigate('/');
+            }, 3000); // Redirects after 3 seconds
+        }
     } catch (error) {
         console.error(error);
-        // show error message
     }
-};
+  };
 
   return (
     <>
@@ -94,9 +97,10 @@ function SignUp() {
         </button>
         <button type="submit" className="create-account-button">Create Account</button>
       </form>
+      {successMessage && <div className="success-message">{successMessage}</div>}
     </div>
     </>
   );
 }
 
-export default SignUp;
+export default SignUp; 
