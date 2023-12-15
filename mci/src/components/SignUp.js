@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AuthService from '../services/AuthService';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -25,11 +26,28 @@ function SignUp() {
     setShowPassword(!showPassword);
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform validation and create account  
-  };
+
+    // Optional: Add password confirmation check
+    if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+        const response = await AuthService.register(
+            formData.firstName,
+            formData.lastName,
+            formData.email,
+            formData.password
+        );
+        console.log(response); // show success message or redirect
+    } catch (error) {
+        console.error(error);
+        // show error message
+    }
+};
 
   return (
     <div className="signup-container">
