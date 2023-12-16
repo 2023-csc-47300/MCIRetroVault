@@ -13,9 +13,9 @@ app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a random secr
 
 
 # initialize all extensions (database, JWT, and CORS)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 db.init_app(app)
 jwt = JWTManager(app)
-CORS(app)
 
 # register
 @app.route('/register', methods=['POST'])
