@@ -27,14 +27,13 @@ class Favorite(db.Model):
     game_about = db.Column(db.String(255), nullable=False)
     date_favorited = db.Column(db.DateTime, default=datetime.utcnow)
 
-def add_favorite(user_id, game_about):
-    favorite = Favorite(user_id=user_id, game_about=game_about)
-    db.session.add(favorite)
-    db.session.commit()
-
-def remove_favorite(favorite_id):
-    favorite = Favorite.query.get(favorite_id)
-    if favorite:
-        db.session.delete(favorite)
+    def add_favorite(user_id, game_about):
+        favorite = Favorite(user_id=user_id, game_about=game_about)
+        db.session.add(favorite)
         db.session.commit()
 
+    def remove_favorite(user_id, favorite_id):
+        favorite = Favorite.query.filter_by(user_id=user_id, favorite_id=favorite_id).first()
+        if favorite:
+            db.session.delete(favorite)
+            db.session.commit()
