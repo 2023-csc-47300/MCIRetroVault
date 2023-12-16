@@ -10,6 +10,7 @@ function HomePage() {
 
     const [gameName, setGameName] = useState('');
 
+
     const [platformName, setPlatformName] = useState("");
     const [platformID, setPlatformID] = useState(0);
 
@@ -77,7 +78,7 @@ function HomePage() {
                     filter: `name:${ gameName },platforms:${ platformID }`,
                     sort:'name:asc',
                     format: 'jsonp',
-                    field_list: 'name,platforms,image,aliases,deck,description'
+                    field_list: 'name,platforms,image,id'
                 },
                 success: function(res) {
                     setGameData(res.results);
@@ -163,11 +164,12 @@ function HomePage() {
                 
                     <div class="flex-container">
                         <div class='card'> 
+                        <Link to={`/about/${ platformID }/${ game.id }`}>
                             <img src={ game.image.icon_url }/>
                             <div class="item">
                                 <h4><b> { game.name } </b></h4>
                             </div>
-
+                        </Link>
                         </div>
                     
                     </div>

@@ -44,3 +44,15 @@ code {
   margin-right: 10px;
   margin-left: 10px;
 }
+
+.header {
+  word-wrap: break-word;
+  font-size: 72px;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  padding-left: 200px;
+  padding-right: 200px;
+
+}
