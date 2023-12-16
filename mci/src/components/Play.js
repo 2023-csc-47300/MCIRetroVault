@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';  
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import AuthService from '../services/AuthService';
 import $ from 'jquery';
@@ -8,7 +8,7 @@ function PlayPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
-    
+
     const safeParse = (data) => {
         try {
             return JSON.parse(data);
@@ -23,32 +23,30 @@ function PlayPage() {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/games/`,
+                    url: `https://www.giantbomb.com/api/games/${game}`,
                     dataType: "jsonp",
                     jsonp: 'json_callback',
                     data: {
                         api_key: API_KEY,
-                        filter: `id:${game},platforms:${platform}`,
                         format: 'jsonp',
-                        field_list: 'name,deck'
+                        field_list: 'name,deck,image'
                     }
                 });
-                setGameData(response.results);
+                setGameData(response.results[0]);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
         }
         fetchData();
-    }, [game]); // dependency array to make sure fetchData runs when `game` changes
+    }, [game, platform]);
 
     const handleLogout = () => {
         AuthService.logout();
         navigate('/');
     };
 
-    // Check if gameData is loaded
     if (!gameData) {
-        return <div> Loading... </div>;
+        return <div>Loading...</div>;
     }
 
     return (
@@ -76,22 +74,22 @@ function PlayPage() {
                 </div>
             </header>
 
-            <div>
+            <div className="game-container">
                 <center>
                     <div className="header">
-                        <strong> PLAY {gameData.name} </strong>
+                        <strong>PLAY {gameData.name.toUpperCase()}</strong>
                     </div>
                 </center>
 
-                <div className='block'>
+                <div className='game-details'>
                     <center>
-
+                        <img src={gameData.image.small_url} alt={gameData.name} />
                     </center>
-                    <div className="block">
-                        <button type="submit" className='like-button'> Like this game </button> <br/>
+                    <div className="game-likes">
+                        <button type="button" className='like-button'>Like this game</button>
                     </div>
-                    <div className='block'>
-                        <div className="disabled"> <p dangerouslySetInnerHTML={{__html: gameData.deck}} /> </div>
+                    <div className='game-description'>
+                        <p dangerouslySetInnerHTML={{ __html: gameData.deck }} />
                     </div>
                 </div>
             </div>
@@ -100,4 +98,3 @@ function PlayPage() {
 }
 
 export default PlayPage;
-
