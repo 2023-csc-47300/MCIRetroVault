@@ -4,6 +4,8 @@ import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import AuthService from '../services/AuthService';
 import $ from 'jquery';
 
+import Iframe from 'react-iframe'
+
 function PlayPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
@@ -23,13 +25,14 @@ function PlayPage() {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/games/${game}`,
+                    url: `https://www.giantbomb.com/api/games/`,
                     dataType: "jsonp",
                     jsonp: 'json_callback',
                     data: {
                         api_key: API_KEY,
                         format: 'jsonp',
-                        field_list: 'name,deck,image'
+                        filter:`id:${game}`,
+                        field_list: 'name,deck'
                     }
                 });
                 setGameData(response.results[0]);
@@ -74,22 +77,34 @@ function PlayPage() {
                 </div>
             </header>
 
-            <div className="game-container">
+            <div>
                 <center>
                     <div className="header">
                         <strong>PLAY {gameData.name.toUpperCase()}</strong>
                     </div>
                 </center>
 
-                <div className='game-details'>
-                    <center>
-                        <img src={gameData.image.small_url} alt={gameData.name} />
-                    </center>
-                    <div className="game-likes">
-                        <button type="button" className='like-button'>Like this game</button>
-                    </div>
-                    <div className='game-description'>
-                        <p dangerouslySetInnerHTML={{ __html: gameData.deck }} />
+                <div align="center" className='game-container'>
+                    <Iframe url="https://www.youtube.com/embed/L0iWBEJgrfE?si=GPksnrWq5fO5s9_B"
+                        position="absolute"
+                        width="100%"
+                        id="myId"
+                        className="myClassname"
+                        height="100%"
+                        styles={{height: "480px", width: "640px"}}
+                    />
+                </div>
+
+                <div className="block">
+                    <div className='game-details'>
+                        <center>
+                        <div className="game-likes">
+                            <button type="button" className='like-button'>Like this game</button>
+                        </div>
+                        <div className='game-description'>
+                            <p dangerouslySetInnerHTML={{ __html: gameData.deck }} />
+                        </div>
+                        </center>
                     </div>
                 </div>
             </div>

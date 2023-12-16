@@ -8,6 +8,7 @@ function AboutPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
+    const [loaded, setLoaded] = useState(false);
     
     const safeParse = (data) => {
         try {
@@ -33,6 +34,8 @@ function AboutPage() {
                     }
                 });
                 setGameData(response.results);
+                console.log(response);
+                setLoaded(true);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
@@ -44,6 +47,35 @@ function AboutPage() {
         AuthService.logout();
         navigate('/');
     };
+
+    function descExists(){
+        if(!gameData.description){
+            return (<center> No data exists for this game on the database. </center>);
+        }
+        else{
+            return ( 
+            <div className='block'>
+                <div className='desc'>
+                    <center> <strong>
+                    © {gameData.publishers[0].name.toUpperCase()} <br/>
+                    {gameData.original_release_date}
+                    </strong> </center>
+                </div>
+                <div className="block">
+                    <button type="submit" className='like-button'> Like this game </button> <br/>
+                </div>
+                <div className='block'>
+                    <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>
+                </div>
+                <center>
+                    <Link to={`/play/${platform}/${game}`}>
+                        <button type="submit" className="play-button">Play Game</button>
+                    </Link>
+                </center>
+            </div> 
+            );
+        }
+    }
 
     // Check if gameData is loaded
     if (!gameData) {
@@ -85,25 +117,8 @@ function AboutPage() {
                     </div>
                 </center>
 
-                <div className='block'>
-                    <div className='desc'>
-                        <center> <strong>
-                        © {gameData.publishers[0].name.toUpperCase()} <br/>
-                        {gameData.original_release_date}
-                        </strong> </center>
-                    </div>
-                    <div className="block">
-                        <button type="submit" className='like-button'> Like this game </button> <br/>
-                    </div>
-                    <div className='block'>
-                        <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>
-                    </div>
-                    <center>
-                        <Link to={`/play/${platform}/${game}`}>
-                            <button type="submit" className="play-button">Play Game</button>
-                        </Link>
-                    </center>
-                </div>
+                { descExists() }
+                
             </body>
         </>
     );
