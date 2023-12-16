@@ -32,6 +32,7 @@ function HomePage() {
               <>
                 {/* User is logged in */}
                 <Link to="/search" className="header-button">Search</Link>
+                <Link to="/dashboard" className="header-button">Dashboard</Link>
                 <button onClick={handleLogout} className="header-button">Logout</button>
                 
                 {/* Add more links as needed */}

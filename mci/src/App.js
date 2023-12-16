@@ -6,6 +6,7 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Search from './components/Search';
 import About from './components/About';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/about/:platform/:game" element={<About />} />
         {/* Add other routes here */}
       </Routes>
