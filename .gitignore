@@ -33,3 +33,6 @@ server/.env
 
 # .DS_store files - pesky things from Mac... not needed in Git
 **/.DS_Store
+
+# database - not to be uploaded to github - created when the app is run
+server/instance

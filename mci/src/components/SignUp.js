@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import AuthService from '../services/AuthService';
+import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
+import { Link, useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -10,8 +13,9 @@ function SignUp() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -20,18 +24,51 @@ function SignUp() {
     }));
   };
 
-  //   password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform validation and create account  
+
+    if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+        const response = await AuthService.register(
+            formData.firstName,
+            formData.lastName,
+            formData.email,
+            formData.password
+        );
+        if (response.msg) {
+            setSuccessMessage(response.msg);
+            setTimeout(() => {
+                navigate('/');
+            }, 3000); // Redirects after 3 seconds
+        }
+    } catch (error) {
+        console.error(error);
+    }
   };
 
   return (
+    <>
+    <header>
+        <div className="header-container">
+          <div className="header-left">
+            <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
+            <h1>MCIRetroVault</h1>
+          </div>
+          <div className="header-right">
+            <Link to="/" className="header-button">Home</Link>
+            <Link to="/signin" className="header-button">Sign In</Link>
+            <Link to="/search" className="header-button">Search</Link>
+          </div>
+        </div>
+      </header>
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
         <h2>Create Your Account</h2>
@@ -60,8 +97,10 @@ function SignUp() {
         </button>
         <button type="submit" className="create-account-button">Create Account</button>
       </form>
+      {successMessage && <div className="success-message">{successMessage}</div>}
     </div>
+    </>
   );
 }
 
-export default SignUp;
+export default SignUp; 
