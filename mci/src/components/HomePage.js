@@ -9,7 +9,7 @@ function HomePage() {
         <div className="header-container">
           <div className="header-left">
             <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
-            <h1>Welcome to MCIRetroVault Website</h1>
+            <h1>MCIRetroVault</h1>
           </div>
           <div className="header-right">
             <Link to="/signin" className="header-button">Sign In</Link>

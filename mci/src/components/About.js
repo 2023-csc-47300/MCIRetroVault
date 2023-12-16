@@ -48,7 +48,7 @@ function AboutPage() {
 
     // Check if gameData is loaded
     if (!gameData) {
-        return <div>Loading...</div>;
+        return <div> Loading... </div>;
     }
 
     return (
@@ -71,26 +71,44 @@ function AboutPage() {
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>
                         )}
+                        <Link to="/search" className="header-button">Search</Link>
                     </div>
                 </div>
             </header>
 
             <body>
-                <div className="header">
-                    <strong> {gameData.name.toUpperCase()} </strong>
-                    <img src={gameData.image.small_url} alt={gameData.name} />
+
+                <center>
+                    <div className="header">
+                        <strong> {gameData.name.toUpperCase()} </strong>
+                    </div>
+                    <div className='header'>
+                        <img src={gameData.image.small_url} alt={gameData.name} />
+                    </div>
+                </center>
+
+                <div className='block'>
+                    <div className='desc'>
+                        <center> <strong>
+                        © {gameData.publishers[0].name.toUpperCase()} <br/>
+                        {gameData.original_release_date}
+                        </strong> </center>
+                    </div>
+                    <div className="block">
+                        <button type="submit" className='like-button'> Like this game </button> <br/>
+                    </div>
+                    <div className='block'>
+                        <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>
+                    </div>
+                    <div className="images">
+                        {/* add logic for image rendering - figure this part out later */}
+                    </div>
+                    <center>
+                        <Link to={`/play/${platform}/${game}`}>
+                            <button type="submit" className="play-button">Play Game</button>
+                        </Link>
+                    </center>
                 </div>
-                <div className="desc">
-                    Game by {gameData.publishers[0].name}
-                    Released {gameData.original_release_date}
-                    <p dangerouslySetInnerHTML={{ __html: gameData.description }} />
-                </div>
-                <div className="images">
-                    {/* add logic for image rendering - figure this part out later */}
-                </div>
-                <Link to={`/play/${platform}/${game}`}>
-                    <button type="submit" className="signin-button">Play Game</button>
-                </Link>
             </body>
         </>
     );
