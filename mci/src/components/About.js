@@ -1,13 +1,14 @@
-import React from 'react';
-import { Link, useParams, useNavigate} from 'react-router-dom';  
+import React, { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';  
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-import AuthService from '../services/AuthService'; // importing AuthService
-
-import { useState, useEffect } from 'react';
+import AuthService from '../services/AuthService';
 import $ from 'jquery';
 
 function AboutPage() {
     const navigate = useNavigate();
+    const { platform, game } = useParams();
+    const [gameData, setGameData] = useState(null);
+    
     const safeParse = (data) => {
         try {
             return JSON.parse(data);
@@ -15,63 +16,44 @@ function AboutPage() {
             return null;
         }
     };
+    const user = safeParse(localStorage.getItem('user'))
+    const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
 
-    const user = safeParse(localStorage.getItem('user'));
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await $.ajax({
+                    url: `https://www.giantbomb.com/api/game/${game}`,
+                    dataType: "jsonp",
+                    jsonp: 'json_callback',
+                    data: {
+                        api_key: API_KEY,
+                        format: 'jsonp',
+                        field_list: 'description,image,images,name,original_release_date,publishers'
+                    }
+                });
+                setGameData(response.results);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
+        }
+
+        fetchData();
+    }, [game]); // dependency array to make sure fetchData runs when `game` changes
 
     const handleLogout = () => {
         AuthService.logout();
         navigate('/search');
     };
 
-    const { platform, game } = useParams();
-    const [gameData, setGameData] = useState([]);
-
-    const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
-
-    async function fetchData() {
-        const data = await $.ajax({
-            url: `https://www.giantbomb.com/api/game/${ game }`,
-            dataType: "jsonp",
-            jsonp: 'json_callback',
-            data: {
-                api_key: API_KEY,
-                format: 'jsonp',
-                field_list: 'description,image,images,name,original_release_date,publishers'
-            }
-        });
-        return data;
+    // Check if gameData is loaded
+    if (!gameData) {
+        return <div>Loading...</div>;
     }
-
-    async function loadData(){
-        const gameData = await fetchData();
-            return (
-                <body>
-                    <div class="header">
-                        <strong> { gameData.name.toUpperCase() } </strong>
-                        <img src={ gameData.image.small_url }/>
-                    </div>
-                    <div class="desc">
-                        Game by { gameData.publishers[0] }
-                        Released {gameData.original_release_date}
-                        { gameData.description }
-                    </div>
-                    <div class="images">
-                        {gameData.images[0]}
-                        {gameData.images[10]}
-                        {gameData.images[20]}
-                    </div>
-                    <Link to={`/play/${ platform }/${ game }`}>
-                        <button type="submit" className="signin-button">Play Game</button>
-                    </Link>
-                </body>
-            );
-    }
-
 
     return (
         <>
-
-         <header>
+            <header>
                 <div className="header-container">
                     <div className="header-left">
                         <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
@@ -82,7 +64,6 @@ function AboutPage() {
                         {user ? (
                             <>
                                 <button onClick={handleLogout} className="header-button">Logout</button>
-                                {/* Add more user-specific links or information here */}
                             </>
                         ) : (
                             <>
@@ -94,8 +75,23 @@ function AboutPage() {
                 </div>
             </header>
 
-            { loadData() }
-
+            <body>
+                <div className="header">
+                    <strong> {gameData.name.toUpperCase()} </strong>
+                    <img src={gameData.image.small_url} alt={gameData.name} />
+                </div>
+                <div className="desc">
+                    Game by {gameData.publishers[0].name}
+                    Released {gameData.original_release_date}
+                    <p dangerouslySetInnerHTML={{ __html: gameData.description }} />
+                </div>
+                <div className="images">
+                    {/* add logic for image rendering - figure this part out later */}
+                </div>
+                <Link to={`/play/${platform}/${game}`}>
+                    <button type="submit" className="signin-button">Play Game</button>
+                </Link>
+            </body>
         </>
     );
 }
