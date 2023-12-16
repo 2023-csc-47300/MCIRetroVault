@@ -28,23 +28,13 @@ function Dashboard() {
             <h1>MCIRetroVault - Dashboard</h1>
           </div>
           <div className="header-right">
-            {user ? (
               <>
                 <Link to="/" className="header-button">Home</Link>
-                {/* User is logged in */}
                 <Link to="/search" className="header-button">Search</Link>
                 <button onClick={handleLogout} className="header-button">Logout</button>
                 
                 {/* Add more links as needed */}
               </>
-            ) : (
-              <>
-                {/* User is not logged in */}
-                <Link to="/signin" className="header-button">Sign In</Link>
-                <Link to="/signup" className="header-button">Sign Up</Link>
-                <Link to="/search" className="header-button">Search</Link>
-              </>
-            )}
           </div>
         </div>
       </header>
