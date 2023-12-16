@@ -4,7 +4,7 @@ import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import AuthService from '../services/AuthService';
 import $ from 'jquery';
 
-function AboutPage() {
+function PlayPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
@@ -23,13 +23,14 @@ function AboutPage() {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/game/${game}`,
+                    url: `https://www.giantbomb.com/api/games/`,
                     dataType: "jsonp",
                     jsonp: 'json_callback',
                     data: {
                         api_key: API_KEY,
+                        filter: `id:${game},platforms:${platform}`,
                         format: 'jsonp',
-                        field_list: 'description,image,images,name,original_release_date,publishers'
+                        field_list: 'name,deck'
                     }
                 });
                 setGameData(response.results);
@@ -75,38 +76,28 @@ function AboutPage() {
                 </div>
             </header>
 
-            <body>
+            <div>
                 <center>
                     <div className="header">
-                        <strong> {gameData.name.toUpperCase()} </strong>
-                    </div>
-                    <div className='header'>
-                        <img src={gameData.image.small_url} alt={gameData.name} />
+                        <strong> PLAY {gameData.name} </strong>
                     </div>
                 </center>
 
                 <div className='block'>
-                    <div className='desc'>
-                        <center> <strong>
-                        © {gameData.publishers[0].name.toUpperCase()} <br/>
-                        {gameData.original_release_date}
-                        </strong> </center>
-                    </div>
+                    <center>
+
+                    </center>
                     <div className="block">
                         <button type="submit" className='like-button'> Like this game </button> <br/>
                     </div>
                     <div className='block'>
-                        <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>
+                        <div className="disabled"> <p dangerouslySetInnerHTML={{__html: gameData.deck}} /> </div>
                     </div>
-                    <center>
-                        <Link to={`/play/${platform}/${game}`}>
-                            <button type="submit" className="play-button">Play Game</button>
-                        </Link>
-                    </center>
                 </div>
-            </body>
+            </div>
         </>
     );
 }
 
-export default AboutPage;
+export default PlayPage;
+
