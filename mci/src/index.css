@@ -44,3 +44,62 @@ code {
   margin-right: 10px;
   margin-left: 10px;
 }
+
+.header {
+  word-wrap: break-word;
+  font-size: 72px;
+
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  padding-left: 200px;
+  padding-right: 200px;
+
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.like-button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.like-button:hover {
+  opacity: 0.8;
+
+}
+
+.desc {
+  font-size: 48px;
+}
+
+.play-button {
+  background-color: #0004ff;
+  border: none;
+  color: white;
+  padding: 30px 64px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 32px;
+  margin: 8px 4px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.play-button:hover {
+  opacity: 0.8;
+}
