@@ -3,8 +3,18 @@ from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from mci_modules.models import db, User
+import requests
+from dotenv import load_dotenv
+import os
+
+# used to load .env file values
+load_dotenv()
 
 app = Flask(__name__)
+
+
+# getting GiantBomb API key
+giant_bomb_api_key = os.getenv('GIANT_BOMB_API_KEY')
 
 # Database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mci.db'
@@ -56,11 +66,35 @@ def login():
     else:
         return jsonify({"msg": "Invalid email or password"}), 401
 
+# number of users registered
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
     num_users = len(users)
     return jsonify({"num_users": num_users}), 200
+
+# search games GiantBomb API
+@app.route('/api/search', methods=['GET'])
+def search_games():
+    game_name = request.args.get('name', '')
+    platform_id = request.args.get('platform', '')
+
+    response = requests.get(
+        "https://www.giantbomb.com/api/game/",
+        params={
+            "api_key": giant_bomb_api_key,
+            "filter": f"name:{game_name},platforms:{platform_id}",
+            "sort": "name:asc",
+            "format": "json",
+            "field_list": "name,platforms,image,id"
+        }
+    )
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to fetch data"}), response.status_code
+
+
 # Other routes...
 
 if __name__ == '__main__':
