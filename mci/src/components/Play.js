@@ -10,6 +10,8 @@ function PlayPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
+    const [emulator, setEmulator] = useState("");
+    const [BIOS, setBIOS] = useState("");
 
     const safeParse = (data) => {
         try {
@@ -18,8 +20,10 @@ function PlayPage() {
             return null;
         }
     };
+
     const user = safeParse(localStorage.getItem('user'))
     const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
+    const DATAPATH = "../../../EmulatorJS-main/data"; // path to EmuJS data folder
 
     useEffect(() => {
         async function fetchData() {
@@ -47,6 +51,39 @@ function PlayPage() {
         AuthService.logout();
         navigate('/');
     };
+
+    function getEmulator() { // get the correct core for RetroArch based on Giant Bomb platform
+        var core = null;
+        switch(platform){
+            case 84: core = 'arcade'; break; // arcade
+            case 40: core = 'atari2600'; break; // 2600
+            case 67: core = 'atari5200'; break; // 5200
+            case 70: core = 'atari7800'; break; // 7800
+            case 21: core = 'nes'; break; // nes
+            case 9: core = 'snes'; break; // snes
+            case 43: core = 'n64'; break; // n64
+            case 3: core = 'gb'; break; // gb
+            case 57: core = 'gb'; break; // gbc
+            case 79: core = 'vb'; break; // vb
+            case 4: core = 'gba'; break; // gba
+            case 8: core = 'segaMS'; break; // sms
+            case 6: core = 'segaMD'; break; // gen / mega drive
+            case 5: core = 'segaGG'; break; // game gear
+            case 22: core = 'psx'; break; // ps1
+        }
+        setEmulator(core);
+    }
+
+    function getBIOS() {
+        var path = "";
+        switch(platform){
+            case 21: path = ""; break; // insert FDS bios here
+            case 8: path = ""; break; // insert master system US bios here
+            case 6: path = ""; break; // insert MD TMSS startup rom here
+            case 22: path = ""; break; // insert PS1 US bios here
+        }
+        setBIOS(path);
+    }
 
     if (!gameData) {
         return <div>Loading...</div>;
@@ -85,12 +122,11 @@ function PlayPage() {
                 </center>
 
                 <div align="center" className='game-container'>
-                    <Iframe url="https://www.youtube.com/embed/L0iWBEJgrfE?si=GPksnrWq5fO5s9_B"
-                        position="absolute"
-                        width="100%"
-                        id="myId"
-                        className="myClassname"
-                        height="100%"
+                    <Iframe 
+                        position="absolute" 
+                        width="100%" 
+                        id="game" 
+                        height="100%" 
                         styles={{height: "480px", width: "640px"}}
                     />
                 </div>
