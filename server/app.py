@@ -73,26 +73,34 @@ def get_users():
     num_users = len(users)
     return jsonify({"num_users": num_users}), 200
 
-# search games GiantBomb API
-@app.route('/api/search', methods=['GET'])
-def search_games():
-    game_name = request.args.get('name', '')
-    platform_id = request.args.get('platform', '')
 
-    response = requests.get(
-        "https://www.giantbomb.com/api/game/",
-        params={
-            "api_key": giant_bomb_api_key,
-            "filter": f"name:{game_name},platforms:{platform_id}",
-            "sort": "name:asc",
-            "format": "json",
-            "field_list": "name,platforms,image,id"
-        }
-    )
-    if response.status_code == 200:
-        return jsonify(response.json())
+@app.route('/search_games', methods=['GET'])
+def search_games():
+    game_name = request.args.get('gameName', '')
+    platform_id = request.args.get('platformID', '')
+
+    if len(game_name) >= 2:
+        headers = {'User-Agent': 'MCIRetroVault/1.0'}
+        response = requests.get(
+            "https://www.giantbomb.com/api/games/",
+            headers=headers,
+            params={
+                "api_key": giant_bomb_api_key,
+                "filter": f"name:{game_name},platforms:{platform_id}",
+                "sort": "name:asc",
+                "format": "json",  # Change this to json
+                "field_list": "name,platforms,image,id"
+            }
+        )
+        print("Response from API:", response.text)  # Debugging
+        if response.status_code == 200:
+            return jsonify(response.json()['results'])
+        else:
+            return jsonify({"error": "API request failed"}), response.status_code
     else:
-        return jsonify({"error": "Failed to fetch data"}), response.status_code
+        return jsonify([])
+
+
 
 
 # Other routes...
