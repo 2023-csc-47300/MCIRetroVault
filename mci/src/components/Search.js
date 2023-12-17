@@ -75,7 +75,6 @@ function Search() {
             case "Genesis": ID = Genesis; break;
             case "GameGear": ID = GameGear; break;
             case "PS1": ID = PS1; break;
-            default: ID = "84,40,67,70,21,9,43,3,57,79,4,8,6,5,22"; break;
         }
 
         setPlatformID(ID);
@@ -151,7 +150,6 @@ function Search() {
             </div>
             <div class="block">
             <select name="platforms" id="platforms" value={platformName} onChange={handlePlatformChange}>
-            <option value="All">All</option>
             <option value="Arcade">Arcade</option>
             <option value="2600">Atari 2600</option>
             <option value="5200">Atari 5200</option>
