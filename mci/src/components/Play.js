@@ -128,6 +128,7 @@ function PlayPage() {
                         id="game" 
                         height="100%" 
                         styles={{height: "480px", width: "640px"}}
+                        src="http://localhost:8080/index.html"
                     />
                 </div>
 

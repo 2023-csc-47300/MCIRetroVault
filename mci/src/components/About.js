@@ -117,7 +117,7 @@ function AboutPage() {
                 </center>
 
                 { descExists() }
-                
+                      
             </body>
         </>
     );
