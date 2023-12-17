@@ -73,7 +73,7 @@ def get_users():
     num_users = len(users)
     return jsonify({"num_users": num_users}), 200
 
-
+# search games
 @app.route('/search_games', methods=['GET'])
 def search_games():
     game_name = request.args.get('gameName', '')
@@ -100,17 +100,21 @@ def search_games():
     else:
         return jsonify([])
 
+# display game info
 @app.route('/display_info', methods=['GET'])
 def display_info():
-    game = request.args.get('game', '')
+    game_id = request.args.get('game', '')
+
+    if not game_id:
+        return jsonify({"error": "No game ID provided"}), 400
 
     headers = {'User-Agent': 'MCIRetroVault/1.0'}
     response = requests.get(
-        "https://www.giantbomb.com/api/games/{id}".format(id = game),
+        f"https://www.giantbomb.com/api/game/{game_id}/",  # API endpoint for a specific game
         headers=headers,
         params={
             "api_key": giant_bomb_api_key,
-            "format": "json",  # Change this to json
+            "format": "json",
             "field_list": "description,image,images,name,original_release_date,publishers"
         }
     )
