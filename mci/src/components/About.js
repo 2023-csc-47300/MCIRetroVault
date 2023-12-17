@@ -63,15 +63,16 @@ function AboutPage() {
                         <Link to="/" className="header-button">Home</Link>
                         {user ? (
                             <>
+                                <Link to="/search" className="header-button">Search</Link>
                                 <button onClick={handleLogout} className="header-button">Logout</button>
                             </>
                         ) : (
                             <>
                                 <Link to="/signin" className="header-button">Sign In</Link>
                                 <Link to="/signup" className="header-button">Sign Up</Link>
+                                <Link to="/search" className="header-button">Search</Link>
                             </>
                         )}
-                        <Link to="/search" className="header-button">Search</Link>
                     </div>
                 </div>
             </header>
