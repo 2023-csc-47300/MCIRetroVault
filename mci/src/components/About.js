@@ -8,7 +8,6 @@ function AboutPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
-    const [loaded, setLoaded] = useState(false);
     
     const safeParse = (data) => {
         try {
@@ -35,7 +34,6 @@ function AboutPage() {
                 });
                 setGameData(response.results);
                 console.log(response);
-                setLoaded(true);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
