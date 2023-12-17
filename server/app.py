@@ -11,11 +11,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mci.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a random secret key
 
-
 # initialize all extensions (database, JWT, and CORS)
+CORS(app)
 db.init_app(app)
 jwt = JWTManager(app)
-CORS(app)
 
 # register
 @app.route('/register', methods=['POST'])
@@ -57,6 +56,11 @@ def login():
     else:
         return jsonify({"msg": "Invalid email or password"}), 401
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    num_users = len(users)
+    return jsonify({"num_users": num_users}), 200
 # Other routes...
 
 if __name__ == '__main__':

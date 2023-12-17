@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
 import AuthService from '../services/AuthService'; // importing AuthService
-
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import { Link } from 'react-router-dom';  
 
@@ -18,19 +16,21 @@ function SignIn() {
   const handleSignIn = async (event) => {
     event.preventDefault();
     try {
-      // Assuming your AuthService.login method expects an object with email and password
       await AuthService.login(email, password);
-      // redirect to the homepage of the website
       window.location.href = '/';
     } catch (error) {
-      // If there's an error, such as wrong credentials, display it
       setErrorMessage('Failed to sign in. Please check your credentials.');
     }
   };
 
+  // Redirect to OAuth routes
+  const handleOAuthSignIn = (provider) => {
+    window.location.href = `http://127.0.0.1:5000/login/${provider}`;
+  };
+
   return (
     <>
-    <header>
+      <header>
         <div className="header-container">
           <div className="header-left">
             <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
@@ -42,41 +42,34 @@ function SignIn() {
             <Link to="/search" className="header-button">Search</Link>
           </div>
         </div>
-    </header>
+      </header>
 
-    <div className="signin-container">
-      <form className="signin-form" onSubmit={handleSignIn}>
-        <h2>Sign In to MCIRetroVault</h2>
-        <div className="input-group">
-          <label htmlFor="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+      <div className="signin-container">
+        <form className="signin-form" onSubmit={handleSignIn}>
+          <h2>Sign In to MCIRetroVault</h2>
+          <div className="input-group">
+            <label htmlFor="email">Email Address</label>
+            <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input type={showPassword ? 'text' : 'password'} id="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button type="button" onClick={togglePasswordVisibility} className="show-password">
+              {showPassword ? 'Hide' : 'Show'} password
+            </button>
+          </div>
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
+          <div className="forgot-password">
+            <a href="#">Forgot your password?</a>
+          </div>
+          <button type="submit" className="signin-button">Sign In</button>
+        </form>
+
+        <div className="oauth-signin">
+          <button onClick={() => handleOAuthSignIn('google')} className="oauth-button google">Sign in with Google</button>
+          <button onClick={() => handleOAuthSignIn('github')} className="oauth-button github">Sign in with GitHub</button>
         </div>
-        <div className="input-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="button" onClick={togglePasswordVisibility} className="show-password">
-            {showPassword ? 'Hide' : 'Show'} password
-          </button>
-        </div>
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <div className="forgot-password">
-          <a href="#">Forgot your password?</a>
-        </div>
-        <button type="submit" className="signin-button">Sign In</button>
-      </form>
-    </div>
+      </div>
     </>
   );
 }
