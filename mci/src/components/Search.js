@@ -31,8 +31,6 @@ function Search() {
 
     const [gameData, setGameData] = useState([]);
 
-    const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
-
     const handleNameChange = (e) => {
         setGameName(e.target.value);
     };
@@ -82,28 +80,28 @@ function Search() {
     };
 
     useEffect(() => {
-        if(gameName.length >= 2){
+        if(gameName.length >= 2 && platformID !== 0){
             $.ajax({
-                url: `https://www.giantbomb.com/api/games/`,
-                dataType: "jsonp",
-                jsonp: 'json_callback',
+                url: `http://127.0.0.1:5000/search_games`, // Point to your Flask route
+                dataType: "json", // Expect JSON data
                 data: {
-                    api_key: API_KEY,
-                    filter: `name:${ gameName },platforms:${ platformID }`,
-                    sort:'name:asc',
-                    format: 'jsonp',
-                    field_list: 'name,platforms,image,id'
+                    gameName: gameName,
+                    platformID: platformID
                 },
                 success: function(res) {
-                    setGameData(res.results);
+                    setGameData(res);
                     console.log(res);
+                },
+                error: function(error) {
+                    // Handle errors here
+                    console.log(error);
                 }
             });
         }
         else{
             setGameData([]);
         }
-      }, [gameName, platformID]);
+    }, [gameName, platformID]);
     
       function checkEmptyResults() {
         if(gameData.length === 0 && gameName.length > 0){
