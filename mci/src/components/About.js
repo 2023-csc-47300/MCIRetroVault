@@ -23,12 +23,10 @@ function AboutPage() {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/game/${game}`,
-                    dataType: "jsonp",
-                    jsonp: 'json_callback',
+                    url: `http://127.0.0.1:5000/display_info`, // Point to Flask route
+                    dataType: "json",
                     data: {
                         api_key: API_KEY,
-                        format: 'jsonp',
                         field_list: 'description,image,images,name,original_release_date,publishers'
                     }
                 });

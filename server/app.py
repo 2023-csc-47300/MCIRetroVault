@@ -100,6 +100,26 @@ def search_games():
     else:
         return jsonify([])
 
+@app.route('/display_info', methods=['GET'])
+def display_info():
+    game = request.args.get('game', '')
+
+    headers = {'User-Agent': 'MCIRetroVault/1.0'}
+    response = requests.get(
+        "https://www.giantbomb.com/api/games/{id}".format(id = game),
+        headers=headers,
+        params={
+            "api_key": giant_bomb_api_key,
+            "format": "json",  # Change this to json
+            "field_list": "description,image,images,name,original_release_date,publishers"
+        }
+    )
+    print("Response from API:", response.text)  # Debugging
+    if response.status_code == 200:
+        return jsonify(response.json()['results'])
+    else:
+        return jsonify({"error": "API request failed"}), response.status_code
+    
 
 
 
