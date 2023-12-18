@@ -47,7 +47,7 @@ function AboutPage() {
 
     function descExists(){
         if(!gameData.description){
-            return (<center> No data exists for this game on the database. </center>);
+            return (<center> No data exists for this game. </center>);
         }
         else{
             return ( 
