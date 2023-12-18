@@ -204,9 +204,8 @@ def display_platform():
 @app.route('/user_email', methods=['GET'])
 @jwt_required()
 def get_user_email():
-    current_user = get_jwt_identity()
-    email = current_user['email']
-    return jsonify({"email": email}), 200
+    current_user_email = get_jwt_identity()
+    return jsonify({"email": current_user_email}), 200
 
 # Other routes...
 
