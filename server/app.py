@@ -35,8 +35,9 @@ jwt = JWTManager(app)
 def is_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
     game_id = request.args.get('game', '')
-    favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    favorite = Favorite.query.filter_by(user_id=user.id, game_id=game_id).first()
     return jsonify(isFavorite=bool(favorite)), 200
+
 
 # add_favorite avoids duplicates and ensure user is logged in
 @app.route('/add_favorite', methods=['POST'])
@@ -45,11 +46,11 @@ def add_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
     game_id = request.args.get('game', '')
     # Check if already favorited
-    existing_favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    existing_favorite = Favorite.query.filter_by(user_id=user.id, game_id=game_id).first()
     if existing_favorite:
         return jsonify({"msg": "Game is already added to favorites."}), 400
     # Add to favorites
-    new_favorite = Favorite(favorite_id=game_id, user_id=user.id)
+    new_favorite = Favorite(user_id=user.id, game_id=game_id)
     db.session.add(new_favorite)
     db.session.commit()
     return jsonify({"msg": "Game added to favorites."}), 201
@@ -60,7 +61,7 @@ def remove_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
     game_id = request.args.get('game', '')
     # Check if the game is actually a favorite
-    favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    favorite = Favorite.query.filter_by(user_id=user.id, game_id=game_id).first()
     if not favorite:
         return jsonify({"msg": "Game is not in favorites."}), 400
     # Remove from favorites

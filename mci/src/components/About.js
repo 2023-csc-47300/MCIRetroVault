@@ -64,7 +64,7 @@ function AboutPage() {
     };
 
     const descExists = () => {
-        if (!gameData.description) {
+        if (!gameData || !gameData.description) {
             return (<center>No data exists for this game.</center>);
         } else {
             return (
@@ -72,7 +72,7 @@ function AboutPage() {
                     <div className='desc'>
                         <center>
                             <strong>
-                                © {gameData.publishers[0].name.toUpperCase()} <br />
+                                © {gameData.publishers && gameData.publishers[0] && gameData.publishers[0].name.toUpperCase()} <br />
                                 {gameData.original_release_date}
                             </strong>
                         </center>
