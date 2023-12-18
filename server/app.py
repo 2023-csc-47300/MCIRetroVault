@@ -6,11 +6,15 @@ from mci_modules.models import db, User, Favorite
 import requests
 from dotenv import load_dotenv
 import os
+from mci_modules.views import views 
+from config import DevelopmentConfig
 
 # used to load .env file values
 load_dotenv()
 
 app = Flask(__name__)
+app.config.from_object(DevelopmentConfig)
+app.register_blueprint(views)
 
 # getting GiantBomb API key
 giant_bomb_api_key = os.getenv('GIANT_BOMB_API_KEY')
