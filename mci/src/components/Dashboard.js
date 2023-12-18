@@ -1,23 +1,48 @@
-import React from 'react';
-import { Link, useNavigate} from 'react-router-dom';  
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-import AuthService from '../services/AuthService'; // importing AuthService
+import AuthService from '../services/AuthService';
 
 function Dashboard() {
   const navigate = useNavigate();
-  const safeParse = (data) => {
-      try {
-          return JSON.parse(data);
-      } catch (e) {
-          return null;
-      }
+  const [userEmail, setUserEmail] = useState('');
+
+  const getUserToken = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.access_token;
   };
-  const user = safeParse(localStorage.getItem('user'));
 
   const handleLogout = () => {
-    AuthService.logout(); // Clear the user session
-    navigate('/'); // Redirect to home page
+    AuthService.logout();
+    navigate('/');
   };
+
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const token = getUserToken();
+
+      if (token) {
+        try {
+          const response = await fetch('http://127.0.0.1:5000/user_email', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUserEmail(data.email);
+          } else {
+            console.error('Failed to fetch user email');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    };
+
+    fetchUserEmail();
+  }, []);
 
   return (
     <>
@@ -31,7 +56,7 @@ function Dashboard() {
               <>
                 <Link to="/" className="header-button">Home</Link>
                 <Link to="/platforms" className="header-button">Platforms</Link>
-                <Link to="/search" className="header-button">Search</Link>
+                <Link to="/search" className="header-button">Search</Link>                
                 <button onClick={handleLogout} className="header-button">Logout</button>
                 
                 {/* Add more links as needed */}
@@ -40,7 +65,8 @@ function Dashboard() {
         </div>
       </header>
       <main>
-        <h1>MCIRetroVault Content </h1>
+        <h1>MCIRetroVault Content</h1>
+        <p>User Email: {userEmail}</p>
       </main>
 
       <footer>
