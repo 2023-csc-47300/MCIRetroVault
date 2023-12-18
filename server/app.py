@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from mci_modules.models import db, User
+
+from mci_modules.models import db, User, Favorite
 import requests
 from dotenv import load_dotenv
 import os
@@ -11,7 +12,6 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-
 
 # getting GiantBomb API key
 giant_bomb_api_key = os.getenv('GIANT_BOMB_API_KEY')
@@ -25,6 +25,34 @@ app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a random secr
 CORS(app)
 db.init_app(app)
 jwt = JWTManager(app)
+
+# add favorite
+@app.route('/add_favorite', methods=['POST'])
+def add_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+
+    if not user:
+        return jsonify({"msg": "Please sign in to add this game to favorites."}), 400
+
+    new_favorite = Favorite(favorite_id=game_id, user_id=user.id)
+    db.session.add(new_favorite)
+    db.session.commit()
+
+    return jsonify({"msg": "Game added to favorites."}), 201
+
+# remove favorite
+@app.route('/remove_favorite', methods=['POST'])
+def remove_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+    favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+
+    if favorite:
+        db.session.delete(favorite)
+        db.session.commit()
+
+        return jsonify({"msg": "Game removed from favorites."}), 201
 
 # register
 @app.route('/register', methods=['POST'])
@@ -148,7 +176,28 @@ def display_game():
     else:
         return jsonify({"error": "API request failed"}), response.status_code
 
+@app.route('/display_platform', methods=['GET'])
+def display_platform():
+    platformID = request.args.get('platformID', '')
 
+    if not platformID:
+        return jsonify({"error": "No platform ID provided"}), 400
+
+    headers = {'User-Agent': 'MCIRetroVault/1.0'}
+    response = requests.get(
+        f"https://www.giantbomb.com/api/platform/{platformID}/",  # API endpoint for a specific game
+        headers=headers,
+        params={
+            "api_key": giant_bomb_api_key,
+            "format": "json",
+            "field_list": "company,description,image,install_base,name,original_price,release_date"
+        }
+    )
+    print("Response from API:", response.text)  # Debugging
+    if response.status_code == 200:
+        return jsonify(response.json()['results'])
+    else:
+        return jsonify({"error": "API request failed"}), response.status_code
 
 # Other routes...
 
