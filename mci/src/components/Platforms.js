@@ -1,14 +1,15 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';  
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
-
-import AuthService from '../services/AuthService'; // importing AuthService
-
-import { useState, useEffect } from 'react';
+import AuthService from '../services/AuthService';
 import $ from 'jquery';
 
 function Platforms() {
     const navigate = useNavigate();
+    const [platformName, setPlatformName] = useState('');
+    const [platformID, setPlatformID] = useState(null);
+    const [platformData, setPlatformData] = useState(null);
+
     const safeParse = (data) => {
         try {
             return JSON.parse(data);
@@ -16,16 +17,13 @@ function Platforms() {
             return null;
         }
     };
+
     const user = safeParse(localStorage.getItem('user'));
 
     const handleLogout = () => {
         AuthService.logout();
-        navigate('/search');
+        navigate('/');
     };
-
-    const [platformName, setPlatformName] = useState("");
-    const [platformID, setPlatformID] = useState(0);
-    const [platformData, setPlatformData] = useState([]);
     
     const handlePlatformChange = (e) => {
 
@@ -71,33 +69,26 @@ function Platforms() {
     };
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await $.ajax({
-                    url: `http://127.0.0.1:5000/display_platform`, // Point to Flask route
-                    dataType: "json",
-                    data: {
-                        platformID: platformID
-                    }
-                });
-                setPlatformData(response); 
-                console.log(response);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
+        if (platformID) {
+            async function fetchData() {
+                try {
+                    const response = await $.ajax({
+                        url: `http://127.0.0.1:5000/display_platform`, // Point to Flask route
+                        dataType: "json",
+                        data: { platformID: platformID }
+                    });
+                    setPlatformData(response);
+                } catch (error) {
+                    console.error("Error fetching data: ", error);
+                    setPlatformData(null);
+                }
             }
-        }
-        if (platformID !== 0) {
             fetchData();
+        } else {
+            setPlatformData(null); // Reset platform data when no platform is selected
         }
-        else {
-            setPlatformData([]);
-        }
-
     }, [platformID]);
 
-    if (!platformData) {
-        return <div> Loading... </div>;
-    }
 
     return (
         <>
@@ -147,39 +138,38 @@ function Platforms() {
             <option value="Genesis">Genesis</option>
             <option value="GameGear">Game Gear</option>
             <option value="PS1">PlayStation</option>
-            </select> <br/>
-            </div>
-
-            </center>
-
-            <body>
-            <center>
-                <div className="header">
-                    <strong> {platformData.name.toUpperCase()} </strong>
-                </div>
-                <div className='header'>
-                    <img src={platformData.image.small_url} alt={platformData.name} />
-                </div>
-                <div className='block'>
-                <div className='desc'>
-                    <center> <strong>
-                    © {platformData.company.toUpperCase()} <br/>
-                    {platformData.release_date}
-                    MSRP ${platformData.original_price}
-                    {platformData.install_base} UNITS SOLD
-                    </strong> </center>
-                </div>
-                <div className='block'>
-                    <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: platformData.description }} /> </div>
-                </div>
-            </div> 
-            </center>
-            </body>
-
-        </main>
-
-
-
+            </select><br/>
+                    </div>
+                </center>
+                {platformID && platformData === undefined && <div>Loading...</div>}
+                {platformData && (
+                <center>
+                    <div className="header">
+                        <strong> {platformData.name?.toUpperCase() || "Unknown Platform"} </strong>
+                    </div>
+                    <div className='header'>
+                        <img src={platformData.image?.small_url} alt={platformData.name || "Platform Image"} />
+                    </div>
+                    <div className='block'>
+                        <div className='desc'>
+                            <center>
+                                <strong>
+                                    © {typeof platformData.company === 'string' ? platformData.company.toUpperCase() : "Unknown Company"} <br/>
+                                    {platformData.release_date || "Unknown Release Date"} <br/>
+                                    MSRP ${platformData.original_price || "Unknown Price"} <br/>
+                                    {platformData.install_base || "Unknown Install Base"} UNITS SOLD
+                                </strong>
+                            </center>
+                        </div>
+                        <div className='block'>
+                            <div className="disabled">
+                                <p dangerouslySetInnerHTML={{ __html: platformData.description || "" }} />
+                            </div>
+                        </div>
+                    </div> 
+                </center>
+            )}
+            </main>
         </>
     );
 }
