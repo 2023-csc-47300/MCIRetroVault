@@ -109,3 +109,34 @@ code {
   margin-bottom: 550px;
   margin-right: 650px;
 }
+
+.select-console {
+  position: absolute;
+  top: 175px;
+  left: 100px;
+  right: 100px;
+  bottom: 100px;
+}
+
+.header-console {
+  word-wrap: break-word;
+  font-size: 72px;
+
+  margin-top: 150px;
+  margin-bottom: 30px;
+  margin-left: 100px;
+  margin-right: 100px;
+
+  padding-left: 200px;
+  padding-right: 200px;
+
+}
+
+.console-container {
+  text-align: left;
+  margin-top: 100px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 550px;
+  width: 1200px;
+}

@@ -106,6 +106,7 @@ function PlayPage() {
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>
                         )}
+                        <Link to="/platforms" className="header-button">Platforms</Link>
                         <Link to="/search" className="header-button">Search</Link>
                     </div>
                 </div>

@@ -129,6 +129,7 @@ function Search() {
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>
                         )}
+                        <Link to="/platforms" className="header-button">Platforms</Link>
                     </div>
                 </div>
             </header>
