@@ -6,13 +6,16 @@ from mci_modules.models import db, User
 import requests
 from dotenv import load_dotenv
 import os
+from mci_modules.views import views 
 
+from config import DevelopmentConfig
 # used to load .env file values
 load_dotenv()
 
 app = Flask(__name__)
 
-
+app.config.from_object(DevelopmentConfig)
+app.register_blueprint(views)
 # getting GiantBomb API key
 giant_bomb_api_key = os.getenv('GIANT_BOMB_API_KEY')
 
@@ -73,7 +76,7 @@ def get_users():
     num_users = len(users)
     return jsonify({"num_users": num_users}), 200
 
-# search games
+
 @app.route('/search_games', methods=['GET'])
 def search_games():
     game_name = request.args.get('gameName', '')
@@ -100,53 +103,6 @@ def search_games():
     else:
         return jsonify([])
 
-# display game info
-@app.route('/display_info', methods=['GET'])
-def display_info():
-    game_id = request.args.get('game', '')
-
-    if not game_id:
-        return jsonify({"error": "No game ID provided"}), 400
-
-    headers = {'User-Agent': 'MCIRetroVault/1.0'}
-    response = requests.get(
-        f"https://www.giantbomb.com/api/game/{game_id}/",  # API endpoint for a specific game
-        headers=headers,
-        params={
-            "api_key": giant_bomb_api_key,
-            "format": "json",
-            "field_list": "description,image,images,name,original_release_date,publishers"
-        }
-    )
-    print("Response from API:", response.text)  # Debugging
-    if response.status_code == 200:
-        return jsonify(response.json()['results'])
-    else:
-        return jsonify({"error": "API request failed"}), response.status_code
-    
-@app.route('/display_game', methods=['GET'])
-def display_game():
-    game_id = request.args.get('game', '')
-
-    if not game_id:
-        return jsonify({"error": "No game ID provided"}), 400
-
-    headers = {'User-Agent': 'MCIRetroVault/1.0'}
-    response = requests.get(
-        "https://www.giantbomb.com/api/games/",
-        headers=headers,
-        params={
-            "api_key": giant_bomb_api_key,
-            "filter": f"id:{game_id}",
-            "format": "json", 
-            "field_list": "name,deck"
-        }
-    )
-    print("Response from API:", response.text)  # Debugging
-    if response.status_code == 200:
-        return jsonify(response.json()['results'])
-    else:
-        return jsonify({"error": "API request failed"}), response.status_code
 
 
 
