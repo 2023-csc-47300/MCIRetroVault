@@ -28,13 +28,11 @@ function PlayPage() {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `http://127.0.0.1:5000/game_info`, // Point to Flask route
+                    url: `http://127.0.0.1:5000/display_game`, // Updated Flask route
                     dataType: "json",
-                    data: {
-                        game: game // Pass the game ID to your Flask API
-                    }
+                    data: { game: game } // Pass the game ID to your Flask API
                 });
-                setGameData(response); // Assuming the Flask API returns the game data directly
+                setGameData(response[0]); // Assuming the Flask API returns an array of games
                 console.log(response);
             } catch (error) {
                 console.error("Error fetching data: ", error);
@@ -44,7 +42,7 @@ function PlayPage() {
         if (game) {
             fetchData();
         }
-    }, [game,platform]);
+    }, [game]);
 
     const handleLogout = () => {
         AuthService.logout();

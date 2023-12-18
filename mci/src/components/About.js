@@ -25,10 +25,10 @@ function AboutPage() {
                     url: `http://127.0.0.1:5000/display_info`, // Point to Flask route
                     dataType: "json",
                     data: {
-                        game: game // Pass the game ID to your Flask API
+                        game: game // Pass the game ID to Flask API
                     }
                 });
-                setGameData(response); // Assuming the Flask API returns the game data directly
+                setGameData(response); // Set gameData to the response from Flask API
                 console.log(response);
             } catch (error) {
                 console.error("Error fetching data: ", error);
