@@ -13,6 +13,9 @@ load_dotenv()
 
 app = Flask(__name__)
 
+# getting GiantBomb API key
+giant_bomb_api_key = os.getenv('GIANT_BOMB_API_KEY')
+
 # Database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mci.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -50,7 +53,6 @@ def remove_favorite():
         db.session.commit()
 
         return jsonify({"msg": "Game removed from favorites."}), 201
-
 
 # register
 @app.route('/register', methods=['POST'])
@@ -92,11 +94,111 @@ def login():
     else:
         return jsonify({"msg": "Invalid email or password"}), 401
 
+# number of users registered
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
     num_users = len(users)
     return jsonify({"num_users": num_users}), 200
+
+# search games
+@app.route('/search_games', methods=['GET'])
+def search_games():
+    game_name = request.args.get('gameName', '')
+    platform_id = request.args.get('platformID', '')
+
+    if len(game_name) >= 2:
+        headers = {'User-Agent': 'MCIRetroVault/1.0'}
+        response = requests.get(
+            "https://www.giantbomb.com/api/games/",
+            headers=headers,
+            params={
+                "api_key": giant_bomb_api_key,
+                "filter": f"name:{game_name},platforms:{platform_id}",
+                "sort": "name:asc",
+                "format": "json",  # Change this to json
+                "field_list": "name,platforms,image,id"
+            }
+        )
+        print("Response from API:", response.text)  # Debugging
+        if response.status_code == 200:
+            return jsonify(response.json()['results'])
+        else:
+            return jsonify({"error": "API request failed"}), response.status_code
+    else:
+        return jsonify([])
+
+# display game info
+@app.route('/display_info', methods=['GET'])
+def display_info():
+    game_id = request.args.get('game', '')
+
+    if not game_id:
+        return jsonify({"error": "No game ID provided"}), 400
+
+    headers = {'User-Agent': 'MCIRetroVault/1.0'}
+    response = requests.get(
+        f"https://www.giantbomb.com/api/game/{game_id}/",  # API endpoint for a specific game
+        headers=headers,
+        params={
+            "api_key": giant_bomb_api_key,
+            "format": "json",
+            "field_list": "description,image,images,name,original_release_date,publishers"
+        }
+    )
+    print("Response from API:", response.text)  # Debugging
+    if response.status_code == 200:
+        return jsonify(response.json()['results'])
+    else:
+        return jsonify({"error": "API request failed"}), response.status_code
+    
+@app.route('/display_game', methods=['GET'])
+def display_game():
+    game_id = request.args.get('game', '')
+
+    if not game_id:
+        return jsonify({"error": "No game ID provided"}), 400
+
+    headers = {'User-Agent': 'MCIRetroVault/1.0'}
+    response = requests.get(
+        "https://www.giantbomb.com/api/games/",
+        headers=headers,
+        params={
+            "api_key": giant_bomb_api_key,
+            "filter": f"id:{game_id}",
+            "format": "json", 
+            "field_list": "name,deck"
+        }
+    )
+    print("Response from API:", response.text)  # Debugging
+    if response.status_code == 200:
+        return jsonify(response.json()['results'])
+    else:
+        return jsonify({"error": "API request failed"}), response.status_code
+
+@app.route('/display_platform', methods=['GET'])
+def display_platform():
+    platformID = request.args.get('platformID', '')
+
+    if not platformID:
+        return jsonify({"error": "No platform ID provided"}), 400
+
+    headers = {'User-Agent': 'MCIRetroVault/1.0'}
+    response = requests.get(
+        f"https://www.giantbomb.com/api/platform/{platformID}/",  # API endpoint for a specific game
+        headers=headers,
+        params={
+            "api_key": giant_bomb_api_key,
+            "format": "json",
+            "field_list": "company,description,image,install_base,name,original_price,release_date"
+        }
+    )
+    print("Response from API:", response.text)  # Debugging
+    if response.status_code == 200:
+        return jsonify(response.json()['results'])
+    else:
+        return jsonify({"error": "API request failed"}), response.status_code
+
 # Other routes...
 
 if __name__ == '__main__':

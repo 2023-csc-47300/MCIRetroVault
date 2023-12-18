@@ -7,7 +7,7 @@ import AuthService from '../services/AuthService'; // importing AuthService
 import { useState, useEffect } from 'react';
 import $ from 'jquery';
 
-function Search() {
+function Platforms() {
     const navigate = useNavigate();
     const safeParse = (data) => {
         try {
@@ -23,18 +23,10 @@ function Search() {
         navigate('/search');
     };
 
-    const [gameName, setGameName] = useState('');
-
-
     const [platformName, setPlatformName] = useState("");
     const [platformID, setPlatformID] = useState(0);
-
-    const [gameData, setGameData] = useState([]);
-
-    const handleNameChange = (e) => {
-        setGameName(e.target.value);
-    };
-
+    const [platformData, setPlatformData] = useState([]);
+    
     const handlePlatformChange = (e) => {
 
         setPlatformName(e.target.value);
@@ -75,40 +67,37 @@ function Search() {
             case "PS1": ID = PS1; break;
             default: ID = 0; break;
         }
-
         setPlatformID(ID);
-        
     };
 
     useEffect(() => {
-        if(gameName.length >= 2 && platformID !== 0){
-            $.ajax({
-                url: `http://127.0.0.1:5000/search_games`, // Point to your Flask route
-                dataType: "json", // Expect JSON data
-                data: {
-                    gameName: gameName,
-                    platformID: platformID
-                },
-                success: function(res) {
-                    setGameData(res);
-                    console.log(res);
-                },
-                error: function(error) {
-                    // Handle errors here
-                    console.log(error);
-                }
-            });
+        async function fetchData() {
+            try {
+                const response = await $.ajax({
+                    url: `http://127.0.0.1:5000/display_platform`, // Point to Flask route
+                    dataType: "json",
+                    data: {
+                        platformID: platformID
+                    }
+                });
+                setPlatformData(response); 
+                console.log(response);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
         }
-        else{
-            setGameData([]);
+        if (platformID !== 0) {
+            fetchData();
         }
-      }, [gameName, platformID]);
-    
-      function checkEmptyResults() {
-        if(gameData.length === 0 && gameName.length > 0){
-          return (<h2> <strong> No results found. </strong> </h2>)
+        else {
+            setPlatformData([]);
         }
-      }
+
+    }, [platformID]);
+
+    if (!platformData) {
+        return <div> Loading... </div>;
+    }
 
     return (
         <>
@@ -136,16 +125,9 @@ function Search() {
             </header>
         <main>
             <center>
-
-            <div class="block">
-            <br/> <label htmlFor="myInput"> What game are you looking for? </label> <br/>
-            </div>
-            <div class="block">
-            <input type="text" id="name" name="name" value={gameName} onChange={handleNameChange} /> <br/>
-            </div>
             
             <div class="block">
-            <label for="platforms"> Choose a platform: </label> <br/>
+            <label for="platforms"> Choose a platform you'd like to read about: </label> <br/>
             </div>
             <div class="block">
             <select name="platforms" id="platforms" value={platformName} onChange={handlePlatformChange}>
@@ -170,40 +152,36 @@ function Search() {
 
             </center>
 
+            <body>
+            <center>
+                <div className="header">
+                    <strong> {platformData.name.toUpperCase()} </strong>
+                </div>
+                <div className='header'>
+                    <img src={platformData.image.small_url} alt={platformData.name} />
+                </div>
+                <div className='block'>
+                <div className='desc'>
+                    <center> <strong>
+                    © {platformData.company.toUpperCase()} <br/>
+                    {platformData.release_date}
+                    MSRP ${platformData.original_price}
+                    {platformData.install_base} UNITS SOLD
+                    </strong> </center>
+                </div>
+                <div className='block'>
+                    <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: platformData.description }} /> </div>
+                </div>
+            </div> 
+            </center>
+            </body>
+
         </main>
 
-        <body>
-            <center>
 
-                <div class="block">
-                { checkEmptyResults() }
-                </div>
-
-                { gameData.map((game) => {
-
-                    return(
-                
-                    <div class="flex-container">
-                        <div class='card'> 
-                        <Link to={`/about/${ platformID }/${ game.id }`}>
-                            <img src={ game.image.icon_url }/>
-                            <div class="item">
-                                <h4><b> { game.name } </b></h4>
-                            </div>
-                        </Link>
-                        </div>
-                    
-                    </div>
-
-                    )
-
-                })}
-
-            </center>
-        </body>
 
         </>
     );
 }
 
-export default Search;
+export default Platforms;

@@ -22,30 +22,27 @@ function PlayPage() {
     };
 
     const user = safeParse(localStorage.getItem('user'))
-    const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
     const DATAPATH = "../../../EmulatorJS-main/data"; // path to EmuJS data folder
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/games/`,
-                    dataType: "jsonp",
-                    jsonp: 'json_callback',
-                    data: {
-                        api_key: API_KEY,
-                        format: 'jsonp',
-                        filter:`id:${game}`,
-                        field_list: 'name,deck'
-                    }
+                    url: `http://127.0.0.1:5000/display_game`, // Updated Flask route
+                    dataType: "json",
+                    data: { game: game } // Pass the game ID to your Flask API
                 });
-                setGameData(response.results[0]);
+                setGameData(response[0]); // Assuming the Flask API returns an array of games
+                console.log(response);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
         }
-        fetchData();
-    }, [game, platform]);
+    
+        if (game) {
+            fetchData();
+        }
+    }, [game]);
 
     const handleLogout = () => {
         AuthService.logout();

@@ -17,29 +17,28 @@ function AboutPage() {
         }
     };
     const user = safeParse(localStorage.getItem('user'))
-    const API_KEY = "b6ea6721c015a9b5e39764279ff22a4c18802e3d"; // Miguel's API key
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await $.ajax({
-                    url: `https://www.giantbomb.com/api/game/${game}`,
-                    dataType: "jsonp",
-                    jsonp: 'json_callback',
+                    url: `http://127.0.0.1:5000/display_info`, // Point to Flask route
+                    dataType: "json",
                     data: {
-                        api_key: API_KEY,
-                        format: 'jsonp',
-                        field_list: 'description,image,images,name,original_release_date,publishers'
+                        game: game // Pass the game ID to Flask API
                     }
                 });
-                setGameData(response.results);
+                setGameData(response); // Set gameData to the response from Flask API
                 console.log(response);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
         }
-        fetchData();
-    }, [game]); // dependency array to make sure fetchData runs when `game` changes
+    
+        if (game) {
+            fetchData();
+        }
+    }, [game]);
 
     const handleLogout = () => {
         AuthService.logout();
