@@ -64,10 +64,14 @@ function Dashboard() {
           </div>
         </div>
       </header>
-      <main>
-        <h1>MCIRetroVault Content</h1>
-        <p>User Email: {userEmail}</p>
+      <main style={{ padding: '20px' }}>
+          <h1>Account Content</h1>
       </main>
+      <body>
+        <center>
+          <p style={{ marginTop: '20px' }}>User Email: {userEmail}</p>
+        </center>
+      </body>
 
       <footer>
         <p>&copy; 2023 MCIRetroVault</p>
