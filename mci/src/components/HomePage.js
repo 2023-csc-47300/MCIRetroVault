@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import AuthService from '../services/AuthService'; // importing AuthService
+import Iframe from 'react-iframe'
 
 function HomePage() {
   const navigate = useNavigate();
@@ -64,13 +65,28 @@ function HomePage() {
         </div>
       </header>
       <main>
-        <h1>MCIRetroVault Content</h1>
-        <p>Total Registered Users: {totalUsers}</p> {/* Display the total number of registered users */}
+        <div className='header'>
+          <strong> <center> Welcome to MCIRetroVault </center> </strong>
+        </div>
       </main>
 
-      <footer>
-        <p>&copy; 2023 MCIRetroVault</p>
-      </footer>
+      <body>
+        <center>
+        <p> Total Registered Users: {totalUsers} </p> {/* Display the total number of registered users */}
+        <p> <Link to="/signup">Sign up</Link> to be a part of this growing number! </p> 
+        </center>
+      </body>
+
+      <div align="center" className='game-container'>
+        <Iframe 
+          position="absolute" 
+          width="100%" 
+          id="game" 
+          height="100%" 
+          styles={{height: "480px", width: "640px"}}
+          src="https://www.youtube.com/embed/L0iWBEJgrfE?si=rsR4P0SniR6Ob8JE"
+        />
+      </div>
     </>
   );
 }

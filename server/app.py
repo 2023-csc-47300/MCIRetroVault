@@ -2,9 +2,7 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< Updated upstream
 from mci_modules.models import db, User
-=======
 from mci_modules.models import db, User, Favorite
 import requests
 from dotenv import load_dotenv
@@ -12,7 +10,6 @@ import os
 
 # used to load .env file values
 load_dotenv()
->>>>>>> Stashed changes
 
 app = Flask(__name__)
 
