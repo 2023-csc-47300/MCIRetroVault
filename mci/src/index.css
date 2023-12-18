@@ -140,3 +140,27 @@ code {
   margin-bottom: 550px;
   width: 1200px;
 }
+
+.more { 
+  justify-content: space-between;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.fit-img { 
+  padding: 0;
+  display: block;
+  margin: 0 auto;
+  max-height: 100%;
+  max-width: 100%;
+  padding-bottom: 60px;
+}
+
+.ab-img { 
+  padding: 0;
+  display: block;
+  margin: 0 auto;
+  max-height: 50%;
+  max-width: 50%;
+  padding-bottom: 20px;
+}

@@ -118,6 +118,7 @@ function Search() {
                     </div>
                     <div className="header-right">
                         <Link to="/" className="header-button">Home</Link>
+                        <Link to="/platforms" className="header-button">Platforms</Link>
                         {user ? (
                             <>
                                 <button onClick={handleLogout} className="header-button">Logout</button>
@@ -129,7 +130,7 @@ function Search() {
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>
                         )}
-                        <Link to="/platforms" className="header-button">Platforms</Link>
+              
                     </div>
                 </div>
             </header>

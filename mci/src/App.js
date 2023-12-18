@@ -9,6 +9,8 @@ import About from './components/About';
 import Play from './components/Play';
 import Platforms from './components/Platforms';
 import Dashboard from './components/Dashboard';
+import AboutUs from './components/AboutUs';
+import Resources from './components/Resources';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/platforms" element={<Platforms />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/resources" element={<Resources />} />
         <Route path="/about/:platform/:game" element={<About />} />
         <Route path="/play/:platform/:game" element={<Play />} />
         {/* Add other routes here */}
