@@ -74,6 +74,7 @@ function HomePage() {
 
       <body>
         <center>
+
         <p> TOTAL REGISTERED USERS: {totalUsers} </p> {/* Display the total number of registered users */}
         {user ? (
               <>
