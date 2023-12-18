@@ -118,6 +118,7 @@ function Search() {
                     </div>
                     <div className="header-right">
                         <Link to="/" className="header-button">Home</Link>
+                        <Link to="/platforms" className="header-button">Platforms</Link>
                         {user ? (
                             <>
                                 <Link to="/platforms" className="header-button">Platforms</Link>
