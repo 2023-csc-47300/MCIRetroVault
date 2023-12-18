@@ -21,26 +21,29 @@ function AboutPage() {
 
     useEffect(() => {
         async function fetchData() {
+            try {
+                const response = await axios.get(`http://127.0.0.1:5000/display_info`, {
+                    params: { game: game },
+                });
+                setGameData(response.data);
+            } catch (error) {
+                console.error("Error fetching game data: ", error);
+            }
+    
             const token = AuthService.getCurrentToken();
             if (token && game) {
                 try {
-                    const response = await axios.get(`http://127.0.0.1:5000/display_info`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                        params: { game: game },
-                    });
-                    setGameData(response.data);
-
                     // Check if the game is already a favorite
                     const favoriteResponse = await axios.get(`http://127.0.0.1:5000/is_favorite?game=${game}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     setIsFavorite(favoriteResponse.data.isFavorite);
                 } catch (error) {
-                    console.error("Error fetching data: ", error);
+                    console.error("Error checking favorite status: ", error);
                 }
             }
         }
-
+    
         fetchData();
     }, [game]);
 
@@ -77,11 +80,13 @@ function AboutPage() {
                             </strong>
                         </center>
                     </div>
-                    <div className="block">
-                        <button onClick={handleToggleFavorite} className='like-button'>
-                            {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                        </button>
-                    </div>
+                    {user && (
+                        <div className="block">
+                            <button onClick={handleToggleFavorite} className='like-button'>
+                                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                            </button>
+                        </div>
+                    )}
                     <div className='block'>
                         <div className="disabled">
                             <p dangerouslySetInnerHTML={{ __html: gameData.description }} />
