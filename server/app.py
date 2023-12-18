@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
 from mci_modules.models import db, User, Favorite
 import requests
 from dotenv import load_dotenv
@@ -151,7 +150,8 @@ def display_info():
         return jsonify(response.json()['results'])
     else:
         return jsonify({"error": "API request failed"}), response.status_code
-    
+
+#displaying different game info for play window 
 @app.route('/display_game', methods=['GET'])
 def display_game():
     game_id = request.args.get('game', '')
@@ -176,6 +176,7 @@ def display_game():
     else:
         return jsonify({"error": "API request failed"}), response.status_code
 
+#displaying platform info
 @app.route('/display_platform', methods=['GET'])
 def display_platform():
     platformID = request.args.get('platformID', '')
@@ -198,6 +199,14 @@ def display_platform():
         return jsonify(response.json()['results'])
     else:
         return jsonify({"error": "API request failed"}), response.status_code
+
+# get user email
+@app.route('/user_email', methods=['GET'])
+@jwt_required()
+def get_user_email():
+    current_user = get_jwt_identity()
+    email = current_user['email']
+    return jsonify({"email": email}), 200
 
 # Other routes...
 

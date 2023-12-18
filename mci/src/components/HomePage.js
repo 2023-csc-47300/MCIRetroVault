@@ -74,9 +74,10 @@ function HomePage() {
 
       <body>
         <center>
-        <p> TOTAL REGISTERED USERS: {totalUsers} </p> {/* Display the total number of registered users */}
-        <p> <Link to="/signup">Sign up</Link> to be a part of this growing number! </p> 
-
+        <p> TOTAL REGISTERED USERS: {totalUsers} </p>
+        {!user && (
+          <p> <Link to="/signup">Sign up</Link> to be a part of this growing number! </p> 
+        )}
         <p> Click <Link to="/platforms">here</Link> to look at our supported platforms, and click <Link to="/search">here</Link> to find some games.</p> 
         <p> Happy gaming! </p> 
         </center>
