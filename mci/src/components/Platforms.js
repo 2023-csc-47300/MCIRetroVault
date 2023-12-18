@@ -9,7 +9,6 @@ function Platforms() {
     const [platformName, setPlatformName] = useState('');
     const [platformID, setPlatformID] = useState(null);
     const [platformData, setPlatformData] = useState(null);
-    const [company, setCompany] = useState('');
 
     const safeParse = (data) => {
         try {
@@ -48,26 +47,24 @@ function Platforms() {
         const PS1 = 22;
 
         var ID;
-        var maker;
         switch(e.target.value){
-            case "Arcade": ID = Arcade; maker = "VARIOUS"; break;
-            case "2600": ID = a2600; maker = "ATARI, INC."; break;
-            case "5200": ID = a5200; maker = "ATARI, INC."; break;
-            case "7800": ID = a7800; maker = "ATARI, INC."; break;
-            case "NES": ID = NES; maker = "NINTENDO CO., LTD."; break;
-            case "SNES": ID = SNES; maker = "NINTENDO CO., LTD."; break;
-            case "N64": ID = N64; maker = "NINTENDO CO., LTD."; break;
-            case "GB": ID = GB; maker = "NINTENDO CO., LTD."; break;
-            case "GBC": ID = GBC; maker = "NINTENDO CO., LTD."; break;
-            case "VB": ID = VB; maker = "NINTENDO CO., LTD."; break;
-            case "GBA": ID = GBA; maker = "NINTENDO CO., LTD."; break;
-            case "MasterSystem": ID = MasterSystem; maker = "SEGA CORPORATION"; break;
-            case "Genesis": ID = Genesis; maker = "SEGA CORPORATION"; break;
-            case "GameGear": ID = GameGear; maker = "SEGA CORPORATION"; break;
-            case "PS1": ID = PS1; maker = "SONY INTERACTIVE ENTERTAINMENT LLC"; break;
+            case "Arcade": ID = Arcade; break;
+            case "2600": ID = a2600; break;
+            case "5200": ID = a5200; break;
+            case "7800": ID = a7800; break;
+            case "NES": ID = NES; break;
+            case "SNES": ID = SNES; break;
+            case "N64": ID = N64; break;
+            case "GB": ID = GB; break;
+            case "GBC": ID = GBC; break;
+            case "VB": ID = VB; break;
+            case "GBA": ID = GBA; break;
+            case "MasterSystem": ID = MasterSystem; break;
+            case "Genesis": ID = Genesis; break;
+            case "GameGear": ID = GameGear; break;
+            case "PS1": ID = PS1; break;
             default: ID = 0; break;
         }
-        setCompany(maker);
         setPlatformID(ID);
     };
 
@@ -114,15 +111,16 @@ function Platforms() {
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>
                         )}
-                        <Link to="/search" className="header-button">Search</Link>
                     </div>
                 </div>
             </header>
         <main>
             <center>
             
-            <div class="select-console">
+            <div class="block">
             <label for="platforms"> Choose a platform you'd like to read about: </label> <br/>
+            </div>
+            <div class="block">
             <select name="platforms" id="platforms" value={platformName} onChange={handlePlatformChange}>
             <option value="choose">Choose a platform...</option>
             <option value="Arcade">Arcade</option>
@@ -145,31 +143,31 @@ function Platforms() {
                 </center>
                 {platformID && platformData === undefined && <div>Loading...</div>}
                 {platformData && (
-                <div>
-                <div className="header-console">
-                    <strong> {platformData.name?.toUpperCase() || "Unknown Platform"} </strong>
-                    <div className='block'>
-                    <img src={platformData.image?.small_url} alt={platformData.name || "Platform Image"} />
+                <center>
+                    <div className="header">
+                        <strong> {platformData.name?.toUpperCase() || "Unknown Platform"} </strong>
                     </div>
-                </div>
-                <div className='console-container'>
+                    <div className='header'>
+                        <img src={platformData.image?.small_url} alt={platformData.name || "Platform Image"} />
+                    </div>
                     <div className='block'>
                         <div className='desc'>
                             <center>
                                 <strong>
-                                    © { company } <br/>
-                                    {platformData.release_date.slice(0, 10) || "RELEASE DATE N/A"} <br/>
-                                    MSRP ${platformData.original_price || "N/A"} <br/>
-                                    {platformData.install_base || "N/A"} UNITS SOLD
+                                    © {typeof platformData.company === 'string' ? platformData.company.toUpperCase() : "Unknown Company"} <br/>
+                                    {platformData.release_date || "Unknown Release Date"} <br/>
+                                    MSRP ${platformData.original_price || "Unknown Price"} <br/>
+                                    {platformData.install_base || "Unknown Install Base"} UNITS SOLD
                                 </strong>
                             </center>
                         </div>
+                        <div className='block'>
                             <div className="disabled">
                                 <p dangerouslySetInnerHTML={{ __html: platformData.description || "" }} />
                             </div>
-                    </div>
-                </div> 
-                </div>
+                        </div>
+                    </div> 
+                </center>
             )}
             </main>
         </>

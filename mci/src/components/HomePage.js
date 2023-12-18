@@ -47,7 +47,6 @@ function HomePage() {
             {user ? (
               <>
                 {/* User is logged in */}
-                <Link to="/platforms" className="header-button">Platforms</Link>
                 <Link to="/search" className="header-button">Search</Link>
                 <Link to="/dashboard" className="header-button">Dashboard</Link>
                 <button onClick={handleLogout} className="header-button">Logout</button>
@@ -59,7 +58,6 @@ function HomePage() {
                 {/* User is not logged in */}
                 <Link to="/signin" className="header-button">Sign In</Link>
                 <Link to="/signup" className="header-button">Sign Up</Link>
-                <Link to="/platforms" className="header-button">Platforms</Link>
                 <Link to="/search" className="header-button">Search</Link>
               </>
             )}
@@ -77,7 +75,7 @@ function HomePage() {
         <p> TOTAL REGISTERED USERS: {totalUsers} </p> {/* Display the total number of registered users */}
         <p> <Link to="/signup">Sign up</Link> to be a part of this growing number! </p> 
 
-        <p> Click <Link to="/platforms">here</Link> to look at our supported platforms, and click <Link to="/search">here</Link> to find some games.</p> 
+        <p> Click <Link to="/search">here</Link> to look at our supported platforms, and click <Link to="/search">here</Link> to find some games.</p> 
         <p> Happy gaming! </p> 
         </center>
       </body>

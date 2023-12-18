@@ -30,7 +30,6 @@ function Dashboard() {
           <div className="header-right">
               <>
                 <Link to="/" className="header-button">Home</Link>
-                <Link to="/platforms" className="header-button">Platforms</Link>
                 <Link to="/search" className="header-button">Search</Link>
                 <button onClick={handleLogout} className="header-button">Logout</button>
                 
