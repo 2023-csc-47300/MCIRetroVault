@@ -19,21 +19,17 @@ class User(db.Model):
 
     def check_password(self, password):
         return sha256.verify(password, self.password_hash)
+    
+    def get_user_id_by_email(email):
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return user.id
+        else:
+            return None
 
 class Favorite(db.Model):
     """Favorite model for storing user's favorite games"""
     favorite_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    game_about = db.Column(db.String(255), nullable=False)
     date_favorited = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def add_favorite(user_id, game_about):
-        favorite = Favorite(user_id=user_id, game_about=game_about)
-        db.session.add(favorite)
-        db.session.commit()
-
-    def remove_favorite(user_id, favorite_id):
-        favorite = Favorite.query.filter_by(user_id=user_id, favorite_id=favorite_id).first()
-        if favorite:
-            db.session.delete(favorite)
-            db.session.commit()
+        

@@ -60,7 +60,9 @@ function AboutPage() {
                     </strong> </center>
                 </div>
                 <div className="block">
-                    <button type="submit" className='like-button'> Like this game </button> <br/>
+                    <form method="post" action="http://127.0.0.1:5000/add_favorite">
+                        <button type="submit" className='like-button'> Like this game </button> <br/>
+                    </form>
                 </div>
                 <div className='block'>
                     <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>

@@ -1,8 +1,18 @@
 from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+<<<<<<< Updated upstream
 from mci_modules.models import db, User
+=======
+from mci_modules.models import db, User, Favorite
+import requests
+from dotenv import load_dotenv
+import os
+
+# used to load .env file values
+load_dotenv()
+>>>>>>> Stashed changes
 
 app = Flask(__name__)
 
@@ -15,6 +25,35 @@ app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a random secr
 CORS(app)
 db.init_app(app)
 jwt = JWTManager(app)
+
+# add favorite
+@app.route('/add_favorite', methods=['POST'])
+def add_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+
+    if not user:
+        return jsonify({"msg": "Please sign in to add this game to favorites."}), 400
+
+    new_favorite = Favorite(favorite_id=game_id, user_id=user.id)
+    db.session.add(new_favorite)
+    db.session.commit()
+
+    return jsonify({"msg": "Game added to favorites."}), 201
+
+# remove favorite
+@app.route('/remove_favorite', methods=['POST'])
+def remove_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+    favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+
+    if favorite:
+        db.session.delete(favorite)
+        db.session.commit()
+
+        return jsonify({"msg": "Game removed from favorites."}), 201
+
 
 # register
 @app.route('/register', methods=['POST'])
