@@ -29,33 +29,44 @@ CORS(app)
 db.init_app(app)
 jwt = JWTManager(app)
 
-# add favorite
-@app.route('/add_favorite', methods=['POST'])
-def add_favorite():
-    user = User.query.filter_by(email=get_jwt_identity()).first()
-    game_id = request.args.get('game', '')
-
-    if not user:
-        return jsonify({"msg": "Please sign in to add this game to favorites."}), 400
-
-    new_favorite = Favorite(favorite_id=game_id, user_id=user.id)
-    db.session.add(new_favorite)
-    db.session.commit()
-
-    return jsonify({"msg": "Game added to favorites."}), 201
-
-# remove favorite
-@app.route('/remove_favorite', methods=['POST'])
-def remove_favorite():
+# checking if game is a favorite
+@app.route('/is_favorite', methods=['GET'])
+@jwt_required()
+def is_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
     game_id = request.args.get('game', '')
     favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    return jsonify(isFavorite=bool(favorite)), 200
 
-    if favorite:
-        db.session.delete(favorite)
-        db.session.commit()
+# add_favorite avoids duplicates and ensure user is logged in
+@app.route('/add_favorite', methods=['POST'])
+@jwt_required()
+def add_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+    # Check if already favorited
+    existing_favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    if existing_favorite:
+        return jsonify({"msg": "Game is already added to favorites."}), 400
+    # Add to favorites
+    new_favorite = Favorite(favorite_id=game_id, user_id=user.id)
+    db.session.add(new_favorite)
+    db.session.commit()
+    return jsonify({"msg": "Game added to favorites."}), 201
 
-        return jsonify({"msg": "Game removed from favorites."}), 201
+@app.route('/remove_favorite', methods=['POST'])
+@jwt_required()
+def remove_favorite():
+    user = User.query.filter_by(email=get_jwt_identity()).first()
+    game_id = request.args.get('game', '')
+    # Check if the game is actually a favorite
+    favorite = Favorite.query.filter_by(user_id=user.id, favorite_id=game_id).first()
+    if not favorite:
+        return jsonify({"msg": "Game is not in favorites."}), 400
+    # Remove from favorites
+    db.session.delete(favorite)
+    db.session.commit()
+    return jsonify({"msg": "Game removed from favorites."}), 200
 
 # register
 @app.route('/register', methods=['POST'])

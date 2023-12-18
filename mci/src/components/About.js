@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';  
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import MCIRetroVaultImage from '../img/MCIRetro_Vault.png';
 import AuthService from '../services/AuthService';
-import $ from 'jquery';
+import axios from 'axios';
 
 function AboutPage() {
     const navigate = useNavigate();
     const { platform, game } = useParams();
     const [gameData, setGameData] = useState(null);
-    
+    const [isFavorite, setIsFavorite] = useState(false);
+
     const safeParse = (data) => {
         try {
             return JSON.parse(data);
@@ -16,28 +17,31 @@ function AboutPage() {
             return null;
         }
     };
-    const user = safeParse(localStorage.getItem('user'))
+    const user = safeParse(localStorage.getItem('user'));
 
     useEffect(() => {
         async function fetchData() {
-            try {
-                const response = await $.ajax({
-                    url: `http://127.0.0.1:5000/display_info`, // Point to Flask route
-                    dataType: "json",
-                    data: {
-                        game: game // Pass the game ID to Flask API
-                    }
-                });
-                setGameData(response); // Set gameData to the response from Flask API
-                console.log(response);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
+            const token = AuthService.getCurrentToken();
+            if (token && game) {
+                try {
+                    const response = await axios.get(`http://127.0.0.1:5000/display_info`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                        params: { game: game },
+                    });
+                    setGameData(response.data);
+
+                    // Check if the game is already a favorite
+                    const favoriteResponse = await axios.get(`http://127.0.0.1:5000/is_favorite?game=${game}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    setIsFavorite(favoriteResponse.data.isFavorite);
+                } catch (error) {
+                    console.error("Error fetching data: ", error);
+                }
             }
         }
-    
-        if (game) {
-            fetchData();
-        }
+
+        fetchData();
     }, [game]);
 
     const handleLogout = () => {
@@ -45,40 +49,56 @@ function AboutPage() {
         navigate('/');
     };
 
-    function descExists(){
-        if(!gameData.description){
-            return (<center> No data exists for this game. </center>);
+    const handleToggleFavorite = async () => {
+        const token = AuthService.getCurrentToken();
+        const endpoint = isFavorite ? 'remove_favorite' : 'add_favorite';
+
+        try {
+            await axios.post(`http://127.0.0.1:5000/${endpoint}?game=${game}`, {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setIsFavorite(!isFavorite);
+        } catch (error) {
+            console.error("Error toggling favorite status: ", error);
         }
-        else{
-            return ( 
-            <div className='block'>
-                <div className='desc'>
-                    <center> <strong>
-                    © {gameData.publishers[0].name.toUpperCase()} <br/>
-                    {gameData.original_release_date}
-                    </strong> </center>
-                </div>
-                <div className="block">
-                    <form method="post" action="http://127.0.0.1:5000/add_favorite">
-                        <button type="submit" className='like-button'> Like this game </button> <br/>
-                    </form>
-                </div>
+    };
+
+    const descExists = () => {
+        if (!gameData.description) {
+            return (<center>No data exists for this game.</center>);
+        } else {
+            return (
                 <div className='block'>
-                    <div class="disabled"> <p dangerouslySetInnerHTML={{ __html: gameData.description }} /> </div>
+                    <div className='desc'>
+                        <center>
+                            <strong>
+                                © {gameData.publishers[0].name.toUpperCase()} <br />
+                                {gameData.original_release_date}
+                            </strong>
+                        </center>
+                    </div>
+                    <div className="block">
+                        <button onClick={handleToggleFavorite} className='like-button'>
+                            {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                        </button>
+                    </div>
+                    <div className='block'>
+                        <div className="disabled">
+                            <p dangerouslySetInnerHTML={{ __html: gameData.description }} />
+                        </div>
+                    </div>
+                    <center>
+                        <Link to={`/play/${platform}/${game}`}>
+                            <button type="submit" className="play-button">Play Game</button>
+                        </Link>
+                    </center>
                 </div>
-                <center>
-                    <Link to={`/play/${platform}/${game}`}>
-                        <button type="submit" className="play-button">Play Game</button>
-                    </Link>
-                </center>
-            </div> 
             );
         }
-    }
+    };
 
-    // Check if gameData is loaded
     if (!gameData) {
-        return <div> Loading... </div>;
+        return <div>Loading...</div>;
     }
 
     return (
@@ -94,17 +114,13 @@ function AboutPage() {
                         <Link to="/platforms" className="header-button">Platforms</Link>
                         <Link to="/search" className="header-button">Search</Link>
                         {user ? (
-                            <>
-                                <button onClick={handleLogout} className="header-button">Logout</button>
-                            </>
+                            <button onClick={handleLogout} className="header-button">Logout</button>
                         ) : (
                             <>
                                 <Link to="/signin" className="header-button">Sign In</Link>
                                 <Link to="/signup" className="header-button">Sign Up</Link>
-                                
                             </>
                         )}
-                       
                     </div>
                 </div>
             </header>
@@ -112,15 +128,14 @@ function AboutPage() {
             <body>
                 <center>
                     <div className="header">
-                        <strong> {gameData.name.toUpperCase()} </strong>
+                        <strong>{gameData.name.toUpperCase()}</strong>
                     </div>
                     <div className='header'>
                         <img src={gameData.image.small_url} alt={gameData.name} />
                     </div>
                 </center>
 
-                { descExists() }
-                      
+                {descExists()}
             </body>
         </>
     );
