@@ -29,7 +29,11 @@ class User(db.Model):
 
 class Favorite(db.Model):
     """Favorite model for storing user's favorite games"""
-    favorite_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # Primary key
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    game_id = db.Column(db.String, nullable=False)  # game_id is a string
+    platform_id = db.Column(db.Integer, nullable=False)  # platform_id is an integer
     date_favorited = db.Column(db.DateTime, default=datetime.utcnow)
+
+
         

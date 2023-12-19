@@ -26,8 +26,14 @@ const logout = () => {
     delete axios.defaults.headers.common['Authorization'];
 };
 
+const getCurrentToken = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.access_token;
+  };
+
 export default {
     login,
     register,
     logout,
+    getCurrentToken,
 };
