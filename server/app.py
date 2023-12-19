@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from mci_modules.models import db, User, Favorite
 import requests
@@ -12,7 +12,7 @@ from config import DevelopmentConfig
 # used to load .env file values
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../mci/build')
 app.config.from_object(DevelopmentConfig)
 app.register_blueprint(views)
 
@@ -31,6 +31,7 @@ jwt = JWTManager(app)
 
 # checking if game is a favorite
 @app.route('/is_favorite', methods=['GET'])
+@cross_origin()
 @jwt_required()
 def is_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
@@ -43,6 +44,7 @@ def is_favorite():
 
 # add_favorite avoids duplicates and ensure user is logged in
 @app.route('/add_favorite', methods=['POST'])
+@cross_origin()
 @jwt_required()
 def add_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
@@ -60,6 +62,7 @@ def add_favorite():
 
 
 @app.route('/remove_favorite', methods=['POST'])
+@cross_origin()
 @jwt_required()
 def remove_favorite():
     user = User.query.filter_by(email=get_jwt_identity()).first()
@@ -76,6 +79,7 @@ def remove_favorite():
 
 
 @app.route('/get_favorites', methods=['GET'])
+@cross_origin()
 @jwt_required()
 def get_favorites():
     user_email = get_jwt_identity()
@@ -110,6 +114,7 @@ def get_favorites():
 
 # register
 @app.route('/register', methods=['POST'])
+@cross_origin()
 def register():
     data = request.json
     print(data)
@@ -133,6 +138,7 @@ def register():
 
 # login 
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
     data = request.json
     email = data.get('email')
@@ -150,6 +156,7 @@ def login():
 
 # number of users registered
 @app.route('/users', methods=['GET'])
+@cross_origin()
 def get_users():
     users = User.query.all()
     num_users = len(users)
@@ -157,6 +164,7 @@ def get_users():
 
 # search games
 @app.route('/search_games', methods=['GET'])
+@cross_origin()
 def search_games():
     game_name = request.args.get('gameName', '')
     platform_id = request.args.get('platformID', '')
@@ -184,6 +192,7 @@ def search_games():
 
 # display game info
 @app.route('/display_info', methods=['GET'])
+@cross_origin()
 def display_info():
     game_id = request.args.get('game', '')
 
@@ -208,6 +217,7 @@ def display_info():
 
 #displaying different game info for play window 
 @app.route('/display_game', methods=['GET'])
+@cross_origin()
 def display_game():
     game_id = request.args.get('game', '')
 
@@ -233,6 +243,7 @@ def display_game():
 
 #displaying platform info
 @app.route('/display_platform', methods=['GET'])
+@cross_origin()
 def display_platform():
     platformID = request.args.get('platformID', '')
 
@@ -257,6 +268,7 @@ def display_platform():
 
 # get user email
 @app.route('/user_email', methods=['GET'])
+@cross_origin()
 @jwt_required()
 def get_user_email():
     current_user_email = get_jwt_identity()
