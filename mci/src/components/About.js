@@ -33,8 +33,7 @@ function AboutPage() {
             const token = AuthService.getCurrentToken();
             if (token && game) {
                 try {
-                    // Check if the game is already a favorite
-                    const favoriteResponse = await axios.get(`http://127.0.0.1:5000/is_favorite?game=${game}`, {
+                    const favoriteResponse = await axios.get(`http://127.0.0.1:5000/is_favorite?game=${game}&platform=${platform}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     setIsFavorite(favoriteResponse.data.isFavorite);
@@ -45,7 +44,7 @@ function AboutPage() {
         }
     
         fetchData();
-    }, [game]);
+    }, [game, platform]);
 
     const handleLogout = () => {
         AuthService.logout();
@@ -57,7 +56,7 @@ function AboutPage() {
         const endpoint = isFavorite ? 'remove_favorite' : 'add_favorite';
 
         try {
-            await axios.post(`http://127.0.0.1:5000/${endpoint}?game=${game}`, {}, {
+            await axios.post(`http://127.0.0.1:5000/${endpoint}?game=${game}&platform=${platform}`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setIsFavorite(!isFavorite);
@@ -65,6 +64,7 @@ function AboutPage() {
             console.error("Error toggling favorite status: ", error);
         }
     };
+
 
     const descExists = () => {
         if (!gameData || !gameData.description) {
