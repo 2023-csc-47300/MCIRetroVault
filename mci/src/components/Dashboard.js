@@ -74,7 +74,7 @@ function Dashboard() {
       <main style={{ padding: '20px' }}>
 
       <div>
-        <div className='header'>
+        <div className='user-header'>
           <strong> <center> Dashboard </center> </strong>
         </div>
         <div className='user'>
