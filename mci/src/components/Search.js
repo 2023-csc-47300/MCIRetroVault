@@ -121,13 +121,11 @@ function Search() {
                         <Link to="/platforms" className="header-button">Platforms</Link>
                         {user ? (
                             <>
-                                <Link to="/platforms" className="header-button">Platforms</Link>
                                 <button onClick={handleLogout} className="header-button">Logout</button>
                                 {/* Add more user-specific links or information here */}
                             </>
                         ) : (
                             <>
-                                <Link to="/platforms" className="header-button">Platforms</Link>
                                 <Link to="/signin" className="header-button">Sign In</Link>
                                 <Link to="/signup" className="header-button">Sign Up</Link>
                             </>

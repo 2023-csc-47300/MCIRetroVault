@@ -94,7 +94,7 @@ def get_favorites():
             params={
                 "api_key": giant_bomb_api_key,
                 "format": "json",
-                "field_list": "name,id"
+                "field_list": "name,id,image"
             }
         )
         if response.status_code == 200:
@@ -102,6 +102,7 @@ def get_favorites():
             favorite_games.append({
                 "name": game_data['name'], 
                 "id": game_data['id'], 
+                "image": game_data['image'],
                 "platform_id": favorite.platform_id
             })
 

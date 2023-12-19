@@ -54,8 +54,8 @@ code {
   margin-left: 10px;
   margin-right: 10px;
 
-  padding-left: 200px;
-  padding-right: 200px;
+  padding-left: 100px;
+  padding-right: 100px;
 
 }
 
@@ -163,4 +163,8 @@ code {
   max-height: 50%;
   max-width: 50%;
   padding-bottom: 20px;
+}
+
+.user {
+  font-size: 24px;
 }

@@ -66,8 +66,7 @@ function SignIn() {
         </form>
 
         <div className="oauth-signin">
-          <button onClick={() => handleOAuthSignIn('google')} className="oauth-button google">Sign in with Google</button>
-          <button onClick={() => handleOAuthSignIn('github')} className="oauth-button github">Sign in with GitHub</button>
+
         </div>
       </div>
     </>

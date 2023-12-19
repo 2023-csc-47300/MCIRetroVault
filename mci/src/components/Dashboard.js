@@ -61,7 +61,7 @@ function Dashboard() {
         <div className="header-container">
           <div className="header-left">
             <img src={MCIRetroVaultImage} alt="MCIRetro Vault" style={{ width: '100px', height: 'auto' }} />
-            <h1>MCIRetroVault - Dashboard</h1>
+            <h1>MCIRetroVault</h1>
           </div>
           <div className="header-right">
             <Link to="/" className="header-button">Home</Link>
@@ -72,22 +72,34 @@ function Dashboard() {
         </div>
       </header>
       <main style={{ padding: '20px' }}>
-        <h1>Account Content</h1>
-        <p style={{ marginTop: '20px' }}>User Email: {userEmail}</p>
-        <div>
-          <h2>Your Favorites:</h2>
+
+      <div>
+        <div className='header'>
+          <strong> <center> Dashboard </center> </strong>
+        </div>
+        <div className='user'>
+          <center>
+            Current user: {userEmail}
+          </center>
+            </div>
+
+          <div className='block'><div className='user'>Your favorites:</div></div>
           {favorites.map(favorite => (
             <div key={favorite.id}>
-              <Link to={`/about/${favorite.platform_id}/${favorite.id}`}>
-                {favorite.name}
-              </Link>
-            </div>
+                <div class="flex-container">
+                  <div class='card'> 
+                    <Link to={`/about/${ favorite.platform_id }/${ favorite.id }`}>
+                            <img src={ favorite.image.icon_url }/>
+                            <div class="item">
+                                <h4><b> { favorite.name } </b></h4>
+                            </div>
+                        </Link>
+                  </div>
+                  </div>
+                </div>
           ))}
-        </div>
+      </div> 
       </main>
-      <footer>
-        <p>&copy; 2023 MCIRetroVault</p>
-      </footer>
     </>
   );
 }

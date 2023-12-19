@@ -134,9 +134,6 @@ function PlayPage() {
                 <div className="block">
                     <div className='game-details'>
                         <center>
-                        <div className="game-likes">
-                            <button type="button" className='like-button'>Like this game</button>
-                        </div>
                         <div className='game-description'>
                             <p dangerouslySetInnerHTML={{ __html: gameData.deck }} />
                         </div>

@@ -32,6 +32,7 @@ class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Primary key
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.String, nullable=False)  # game_id is a string
+    game_img = db.Column(db.String, default='')
     platform_id = db.Column(db.Integer, nullable=False)  # platform_id is an integer
     date_favorited = db.Column(db.DateTime, default=datetime.utcnow)
 
